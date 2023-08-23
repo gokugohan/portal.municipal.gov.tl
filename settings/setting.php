@@ -7,7 +7,7 @@ function theme_options_panel()
 {
 
     add_menu_page('Portal', 'Portal', 'manage_options', 'portalmunicipal-theme-options', 'setting_options_page');
-    add_submenu_page('portalmunicipal-theme-options', 'Coursera Users', 'Coursera Users', 'manage_options', 'coursera-user', 'coursera_user_setting_page');
+    // add_submenu_page('portalmunicipal-theme-options', 'Coursera Users', 'Coursera Users', 'manage_options', 'coursera-user', 'coursera_user_setting_page');
 
 }
 

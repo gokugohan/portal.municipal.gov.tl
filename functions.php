@@ -31,9 +31,9 @@ if ($is_faq_enabled) {
 }
 
 
-require_once(dirname(__FILE__) . '/functions/create_coursera_users_table.php');
-require_once(dirname(__FILE__) . '/functions/create_coursera_access_token_table.php');
-require_once(dirname(__FILE__) . '/functions/coursera_user_ajax.php');
+//require_once(dirname(__FILE__) . '/functions/create_coursera_users_table.php');
+//require_once(dirname(__FILE__) . '/functions/create_coursera_access_token_table.php');
+//require_once(dirname(__FILE__) . '/functions/coursera_user_ajax.php');
 
 //
 //if ($is_library_enabled) {
