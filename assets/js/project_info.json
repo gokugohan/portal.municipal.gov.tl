@@ -1,0 +1,371 @@
+[
+
+	{
+		"Dili": [{
+			"Project Name": "UNTL Faculty of Agriculture",
+			"Description": "Construction of a UNTL campus in Hera for a new Faculty of Agriculture",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "24000",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Education",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		}
+		,{
+			"Project Name": "Building new Intensive Care Unit for National Hospital",
+			"Description": "Extension of Intensive Care Unit building and reinstallation of MV line and underground cable at Hospital Nacional Guido Valadaraes",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "300",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Health",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		},{
+			"Project Name": "Building new Pediatric Unit for National Hospital",
+			"Description": "Extension of MRI Room, extension of Sterilisator Room, new contraction for Acute Care building, Consultating for Detail Engineering Design for Pediatric an ICCU Building in HNGV",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "244",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Health",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		}
+		]
+	}, {
+	"Baucau": [{
+			"Project Name": "Construction of new Portuguese school Escola Polo de Baucau",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrasutrcture Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "677",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Education",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		},{
+			"Project Name": "Baucau Hospital",
+			"Description": "Building a new hospital in Baucau",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "9538",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Health",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		}
+	]
+	}, {
+	"Maliana": [{
+			"Project Name": "Construction of new Portuguese school Escola Polo de Maliana",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "652",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Education",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		}
+	]
+	}, {
+	"Ermera": [{
+			"Project Name": "Construction of new Portuguese school Escola Polo de Ermera",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "100",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Education",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		}
+		]
+	}, {
+	"Manatuto": [{
+			"Project Name": "Construction of new Portuguese school Escola Polo de Ermera",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "912",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Education",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		},{
+			"Project Name": "Construsaun Escola Akedemika peskas",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "39844",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		}
+	]
+	}, {
+	"Betano": [{
+			"Project Name": "Betano Polytechnic School ",
+			"Description": "Building a new polytechnic school in Betano",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "25337",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Education",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		},{
+			"Project Name": "Construction of new Portuguese school Escola Polo de Same",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "664",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Education",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		}
+	]
+	}, {
+	"Bobonaro": [{
+			"Project Name": "Construction of new Portuguese school Escola Polo de Ermera",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "912",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Education",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		},{
+			"Project Name": "Construsaun Escola Akedemika peskas",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "39844",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		}
+	]
+	}, {
+	"Aileu": [{
+			"Project Name": "Construction of new Portuguese school Escola Polo de Ermera",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "912",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Education",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		},{
+			"Project Name": "Construsaun Escola Akedemika peskas",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "39844",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		}
+	]
+	}, {
+	"Covalima": [{
+			"Project Name": "Construction of new Portuguese school Escola Polo de Ermera",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "912",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Education",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		},{
+			"Project Name": "Construsaun Escola Akedemika peskas",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "39844",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		}
+	]
+	}, {
+	"Liquiça": [{
+			"Project Name": "Construction of new Portuguese school Escola Polo de Ermera",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "912",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Education",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		},{
+			"Project Name": "Construsaun Escola Akedemika peskas",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "39844",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		}
+	]
+	},{
+	"Lautém": [{
+			"Project Name": "Construction of new Portuguese school Escola Polo de Ermera",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "912",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Education",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		},{
+			"Project Name": "Construsaun Escola Akedemika peskas",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "39844",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		}
+	]
+	},{
+	"Viqueque": [{
+			"Project Name": "Construction of new Portuguese school Escola Polo de Ermera",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "912",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Education",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		},{
+			"Project Name": "Construsaun Escola Akedemika peskas",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "39844",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		}
+	]
+	},{
+	"Ainaro": [{
+			"Project Name": "Construction of new Portuguese school Escola Polo de Ermera",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "912",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Education",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		},{
+			"Project Name": "Construsaun Escola Akedemika peskas",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "39844",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		}
+	]
+	},
+{
+	"Manufahi": [{
+			"Project Name": "Construction of new Portuguese school Escola Polo de ManuFahi",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "912",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "Education",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		},{
+			"Project Name": "Construsaun Escola Akedemika peskas",
+			"Description": "Construction of new school",
+			"Lead Ministry/Department": "Infrastructure Fund",
+			"Project Start Date": "",
+			"Project End Date": "",
+			"Budget (000 USD)": "39844",
+			"Project URL": "",
+			"Contact Information": "",
+			"Sector(s)": "",
+			"Partner(s)": "",
+			"SDG Goal(s)": ""
+		}
+	]
+	}]

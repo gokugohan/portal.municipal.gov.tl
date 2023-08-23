@@ -1,0 +1,25 @@
+body.login {
+    /*background-image:url(../img/login-bg.jpg) !important;*/
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#login{
+    position: fixed;
+    padding: 20px 0 0;
+    background: #f1f1f1c7;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    border-radius: 5px;
+}
+.login form{
+    background: transparent;
+}
+.login h1 a{
+    background-image:url(../img/logo.png) !important;
+    background-size: 150px;
+    height: 150px;
+    width: 150px;
+}

@@ -1,0 +1,341 @@
+/*
+Theme Name:     Portal
+Author:         Helder Chebre
+Version:        1.0.0
+Description:    There is no one who loves pain itself, who seeks after it and wants to have it, simply because it is pain...
+*/
+
+* {
+    overflow-wrap: break-word;
+}
+
+
+/*
+------------------ Scrollbar
+ */
+body::-webkit-scrollbar {
+    /* width: 1em; */
+
+}
+
+body::-webkit-scrollbar-track {
+    /*box-shadow: inset 0 0 6px rgba(195, 7, 52, 0.3);*/
+}
+
+body::-webkit-scrollbar-thumb {
+    /* background-color: #c30734; */
+    border-radius: 5px;
+    /*outline: 1px solid rgba(195, 7, 52, 0.3);*/
+}
+
+.text-dark{
+    color: #202b5d;
+}
+.separator {
+    border-bottom: 1px dashed #aaa;
+}
+
+
+@media (max-width: 576px) {
+    .hide-on-small-only {
+        display: none !important
+    }
+
+}
+
+@media (min-width: 576px) {
+    .hide-on-small-and-down {
+        display: none !important
+    }
+
+
+}
+
+@media (min-width: 768px) {
+    .hide-on-small-and-down {
+        display: block !important
+    }
+}
+@media only screen and (max-width: 992px) {
+    .hide-on-med-and-down {
+        display: none !important
+    }
+
+
+}
+
+
+.section-header {
+    text-align: center;
+    padding: 30px 0;
+    position: relative;
+}
+
+.section-header span {
+    position: absolute;
+    top: 46px;
+    color: rgba(14, 29, 52, 0.06);
+    left: 0;
+    right: 0;
+    z-index: 1;
+    font-weight:700;
+    font-size: 50px;
+    text-transform: uppercase;
+    line-height: 0;
+}
+
+.section-header h2 {
+    text-transform: uppercase;
+    color: #960807;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    position: relative;
+    font-weight: 400;
+}
+
+.section-header h2:after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 50px;
+    height: 3px;
+    background: #a01f1f;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+/* ACCORDION */
+
+.collapsible-link::before {
+    content: '';
+    width: 14px;
+    height: 2px;
+    background: #960807;
+    position: absolute;
+    top: calc(50% - 1px);
+    right: 1rem;
+    display: block;
+    transition: all 0.3s;
+}
+
+/* Vertical line */
+.collapsible-link::after {
+    content: '';
+    width: 2px;
+    height: 14px;
+    background: #960807;
+    position: absolute;
+    top: calc(50% - 7px);
+    right: calc(1rem + 6px);
+    display: block;
+    transition: all 0.3s;
+}
+
+.collapsible-link[aria-expanded='true']::after {
+    transform: rotate(90deg) translateX(-1px);
+}
+
+.collapsible-link[aria-expanded='true']::before {
+    transform: rotate(180deg);
+}
+
+.custom-menu-list {
+    flex-direction: row;
+}
+
+.custom-menu-list a.dropdown-item {
+    padding: 0;
+}
+
+.custom-menu-list .dropdown-item:focus, .dropdown-item:hover {
+    background: transparent !important;
+}
+
+.download-list li:first-child a, .download-list li:first-child a span {
+    padding-left: 0px;
+}
+
+.download-counter {
+    margin: 0 0 0 30px;
+    padding: 7px;
+    background: #960707;
+    color: #e9e9e9;
+    border-color: transparent;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: text !important;
+}
+
+
+/*    Navbar */
+
+
+#modal-sso-login .modal-dialog {
+    width: 25%;
+}
+
+@media only screen and
+(min-device-width: 768px) and
+(max-device-width: 1023px) {
+    #modal-sso-login .modal-dialog {
+        width: 50%;
+    }
+}
+
+
+@media (max-width: 359px) {
+    #modal-sso-login .modal-dialog {
+        width: 90%;
+    }
+}
+
+@media (min-width: 360px) and (max-width: 767px) {
+    #modal-sso-login .modal-dialog {
+        width: 90%;
+    }
+}
+
+.btn-getstarted {
+    background: #960807;
+    color: #fff;
+    margin: 10px 10px !important;
+    padding: 10px 10px !important;
+}
+
+
+#accordion_faq .card {
+    border-top: 3px solid #960707 !important;
+}
+
+#accorditon_faq .content > h6, #accordion_faq .content > h6 a {
+    color: #960807 !important;
+}
+
+#accordion_faq > .card > .card-header h6 a {
+    color: #960807 !important;
+}
+
+#accordion_faq .card-body p {
+    line-height: 1.5em;
+    font-size: 1.175rem;
+}
+
+li.nav-item {
+    transition: 0.3s;
+}
+
+li.nav-item:hover {
+    background: #960807;
+    border-radius: 4px;
+}
+
+
+#hero{
+    background-image: url('assets/img/wave.png') !important;
+    background: rgba(150, 8, 7 ,.57);
+    background-repeat: no-repeat;
+    background-position: bottom;
+    background-size: contain;
+}
+
+/*--------------------------------------------------------------
+       # Cta
+       --------------------------------------------------------------*/
+.cta {
+
+    background-size: cover;
+    padding: 100px 0;
+}
+
+
+.cta p {
+    font-size: 1.2rem;
+}
+
+@media (min-width: 992px){
+    .text-lg-start {
+        text-align: left !important;
+    }
+}
+
+@media (max-width: 1024px) {
+    .cta {
+        background-attachment: scroll;
+    }
+}
+
+/*Form Comment*/
+
+.comment-form {
+    margin-bottom: 20px;
+}
+
+.comment-form > p > label {
+    padding: 10px 0;
+    font-weight: 600;
+}
+
+.comment-form #comment {
+    display: block;
+    width: 100%;
+
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.comment-form #submit {
+    padding: 10px 20px;
+    background: #960807;
+    border: unset;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 0 2px #960807;
+    outline: 0;
+    position: relative;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.comment-form #submit:after {
+    content: "\f017";
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+#checkout-payment #checkout-order-action button {
+    margin: 0 !important;
+    background: #960807 !important;
+}
+
+.lp-user-profile.guest .lp-content-area {
+    padding: 20px;
+    font-size: 24px;
+    text-align: center;
+}
+
+table thead tr th{
+    background: #960807c7;
+    border-right: 1px solid #fff;
+    color: #fff !important;
+}
+
+table td{
+    font-family: "Roboto", sans-serif;
+}

@@ -1,0 +1,196 @@
+/* Begin Language Switcher */
+
+
+.front-lang-switcher {
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 9;
+    width:100%;
+    height:50px;
+    transition: 0.5s;
+}
+
+.front-lang-switcher ul.navbar-nav{
+    float:right;
+}
+
+.front-lang-switcher .fixed-top2 {
+    height: 30px;
+    /*background: #960707;*/
+}
+
+.front-lang-switcher ul.dropdown-menu {
+    min-width: 77px;
+    /*left: -20px !important;*/
+    position: absolute;
+}
+.front-lang-switcher ul.dropdown-menu li:hover {
+    background: #b01701;
+}
+
+.front-lang-switcher ul.dropdown-menu li a{
+    text-transform: uppercase;
+}
+
+.front-lang-switcher ul.dropdown-menu li a:hover{
+    color: #fff !important;
+}
+
+.front-lang-switcher ul li.nav-item {
+    padding: 2px 15px;
+}
+
+.front-lang-switcher ul li img.img_size, .front-lang-switcher ul li b.caret {
+    margin-top: -5px !important;
+}
+
+.front-lang-switcher ul li b.caret:hover {
+    cursor: pointer;
+}
+
+
+.login-logout-menu{
+    width: 80% !important;
+}
+
+/* End Language Switcher */
+
+
+nav.navbar.fixed-top {
+    position: fixed;
+    background: transparent;
+    height: auto;
+    box-shadow: none;
+    transition: 1s;
+}
+
+nav.navbar .navbar-brand {
+    display: inline-block;
+    padding-top: .3125rem;
+    padding-bottom: .3125rem;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+    width: 7.5rem;
+}
+
+ul.navbar-nav li.nav-item a.nav-link img.about-icon-img{
+    filter: invert(1) brightness(1);
+}
+ul.navbar-nav li a.nav-link{
+    color: #fff !important;
+}
+ul.dropdown-menu li:hover {
+    background: #b01701;
+}
+ul.dropdown-menu li:hover a{
+    color: #fff !important;
+}
+.navbar-dark .navbar-toggler-icon{
+    filter: invert(1) brightness(1);
+    font-size: 2.5rem;
+}
+
+@media only screen and
+(min-device-width: 768px) and
+(max-device-width: 1023px){
+
+    ul.navbar-nav li a.nav-link{
+        color: #fff;
+    }
+    div#navbarSupportedContent {
+        background: #960807de !important;
+        text-align: left !important;
+        /*max-height: 400px;*/
+        /*height: 355px;*/
+        max-height: unset !important;
+        height: auto !important;
+        border-top: none !important;
+        box-shadow: none !important;
+        position: static !important;
+    }
+    ul.navbar-nav li.nav-item{
+        padding: 0px 10px !important;
+    }
+    ul.navbar-nav li.nav-item a.nav-link{
+        color: #fff !important;
+        font-size: 1rem;
+    }
+    ul.navbar-nav li.nav-item a.nav-link img.about-icon-img {
+        filter: invert(1) brightness(0);
+    }
+
+
+
+}
+
+@media (max-width: 359px){
+    div#navbarSupportedContent {
+        background: #960807de;
+        text-align: left;
+        /*max-height: 400px;*/
+        /*height: 355px;*/
+        border-top: 1px solid;
+        box-shadow: 0 2px 10px rgba(0, 0, 0,.2);
+    }
+    .about-portal a > img.about-icon-img, .faq-portal a > img.about-icon-img {
+        width: 23px;
+        filter: invert(1) brightness(0);
+    }
+
+    ul.navbar-nav li.nav-item{
+        padding: 0px 10px !important;
+    }
+    ul.navbar-nav li.nav-item a.nav-link{
+        color: #000 !important;
+    }
+    ul.dropdown-menu.show {
+        /*transform: translate3d(-25px, 33px, 0px) !important;*/
+        transform: none !important;
+    }
+    ul.navbar-nav li.nav-item a.nav-link img.about-icon-img {
+        filter: invert(1) brightness(0);
+    }
+
+}
+@media (min-width: 360px) and (max-width: 767px)
+{
+    a.nav-link, a.aa {
+        font-size: 18px;
+        color: #000;
+        font-weight: bold;
+    }
+    div#navbarSupportedContent {
+        background: #960807de !important;
+        text-align: left !important;
+        max-height: unset !important;
+        height: auto !important;
+        border-top: none !important;
+        box-shadow: none !important;
+    }
+
+    div#navbarSupportedContent ul.dropdown-menu.show li{
+        margin-bottom: 4px;
+    }
+
+
+    .about-portal a > img.about-icon-img, .faq-portal a > img.about-icon-img {
+        width: 23px;
+        filter: invert(1) brightness(0);
+    }
+
+    ul.navbar-nav li.nav-item{
+        padding: 0px 10px !important;
+    }
+    ul.navbar-nav li.nav-item a.nav-link{
+        /*color: #000 !important;*/
+    }
+    ul.dropdown-menu.show {
+        transform: none !important;
+    }
+
+    ul.navbar-nav li.nav-item a.nav-link img.about-icon-img {
+        filter: invert(1) brightness(1);
+    }
+
+}

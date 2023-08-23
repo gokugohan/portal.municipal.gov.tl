@@ -1,0 +1,64 @@
+@media only screen and (max-width: 769px) {
+
+  .navbar-light .navbar-toggler {
+    color: rgb(0, 0, 0);
+    border-color: rgb(0, 0, 0);
+}
+.the-indicator-row{
+	height:auto ;
+	
+}
+
+.the-float-right {
+    float: left;
+}
+
+.null-div{display:none;}
+
+ .sdg-index{word-wrap: break-word !important;}
+ #myLogo{
+	 width: 242px;
+ }
+ 
+ .dropdown-toggle::after {
+    padding-top: 0px !important;
+    margin-left: 20px !important;
+    font-size: 20px !important;
+	
+	
+}
+
+.my-indicator {
+    font-size: 16px;
+}
+.navigation-bg {
+    content: "";
+    position: absolute;
+    /*background: #F6F9FB;*/
+	top:0px;
+	left:377px;
+}
+
+
+}
+
+
+
+
+/*-------------980resposive-----------------*/
+
+@media only screen and (max-width: 988px) {
+
+  .navigation-bg{
+	right: 0;
+	content: "";
+    position: absolute;
+	left: inherit;
+	  }
+	  
+	.navbar-light .navbar-toggler {
+    color: rgb(0, 0, 0);
+    border-color: rgb(0, 0, 0);
+}
+  
+}

@@ -1,0 +1,188 @@
+.sticky{
+    /* position: sticky; */
+}
+#map {
+    /*width: 100%;*/
+    height: 80vh;
+    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);*/
+    z-index: 2;
+}
+
+
+#map .leaflet-top.leaflet-left{
+    top:60px;
+}
+
+.form-search-map{
+    width: 350px;
+    float: right;
+    position: absolute;
+    z-index: 1000;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    margin-left: 10px;
+
+}
+.map-attribute-logo {
+    position: absolute;
+    bottom: 10px;
+    right: 5px;
+    width: 75px;
+    z-index: 999;
+}
+
+.municipality-profile{
+    width: 20rem;
+    z-index: 999;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-size: cover;
+    /*border: 1px solid rgb(198 25 25);*/
+    border-radius: 5px;
+}
+.municipality-profile .card-body{
+    padding: 0;
+}
+.municipality-profile .municipality-detail{
+    background: rgba(0,0,0,.25);
+    color: #fff;
+    padding: 1rem;
+}
+
+/*
+    Leaflet customization
+*/
+
+.leaflet-control-container {
+    top: 0;
+    position: relative;
+    right: 0;
+    height: auto;
+    padding: 15px;
+}
+
+.leaflet-bar a, .leaflet-bar a:hover {
+    background-color: #FFFFFF !important;
+}
+
+.leaflet-control-layers-expanded {
+    padding: 15px;
+}
+
+.leaflet-control-layers {
+    overflow: auto;
+}
+
+.leaflet-control-layers label {
+    font-weight: normal;
+    margin-bottom: 0px;
+}
+
+.leaflet-control-layers-list input[type="radio"],
+input[type="checkbox"] {
+    margin: 2px;
+    opacity: 1;
+    position: relative;
+}
+
+.leaflet-control-layers-overlays input[type="checkbox"] {
+    opacity: 1;
+    position: relative;
+}
+
+.leaflet-control-layers {
+    border: none !important;
+}
+
+.leaflet-container {
+    font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif !important;
+}
+
+.ac-container input.menu:checked + label, .ac-container input.menu:checked + label:hover {
+    background: #e3f0fa;
+    color: #3d7489;
+}
+
+div[id^="leaflet-control-accordion-layers"] > label {
+    padding: 5px !important;
+}
+
+
+.ac-container article label {
+    margin-left: 2px;
+    text-transform: capitalize;
+}
+
+.leaflet-control-zoom, .leaflet-bar {
+    border: none !important;
+}
+
+.leaflet-touch .leaflet-bar a {
+    width: 36px !important;
+    height: 36px !important;
+}
+
+.leaflet-control-easyPrint-button-export {
+    width: 26px !important;
+    height: 26px !important;
+}
+
+.easyPrintHolder {
+    margin-top: -26px !important;
+    margin-left: 30px !important;
+}
+
+.leaflet-draw-section .leaflet-draw-toolbar {
+    margin-bottom: 1px;
+}
+
+.leaflet-draw-toolbar a {
+    width: 36px !important;
+    height: 36px !important;
+}
+
+
+.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polyline {
+    background-position: 2px 2px !important;
+}
+
+.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-polygon {
+    background-position: -28px 3px !important;
+}
+
+.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-rectangle {
+    background-position: -58px 4px !important;
+}
+
+.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-circle {
+    background-position: -88px 5px !important;
+}
+
+.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-marker {
+    background-position: -118px 6px !important;
+}
+
+.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-edit.leaflet-disabled {
+    background-position: -208px 4px !important;
+}
+
+.leaflet-touch .leaflet-draw-toolbar .leaflet-draw-edit-remove.leaflet-disabled {
+    background-position: -238px 5px !important;
+}
+
+/* .leaflet-panel-layers-group{
+    border:none !important;
+    background:none !important;
+}
+
+.leaflet-panel-layers-overlays .leaflet-panel-layers-item{
+    border:none !important;
+} */
+
+
+.leaflet-popup-content {
+    max-height: 75vh;
+    overflow-x: scroll;
+}
+

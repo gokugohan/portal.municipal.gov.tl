@@ -1,0 +1,94 @@
+.footer {
+    font-size: 14px;
+    background-color: #960807;
+    padding: 50px 0;
+    color: white;
+}
+
+.footer h4{
+    color:#fff;
+}
+.footer .footer-info .logo {
+    font-family: "Inter", sans-serif;
+    font-size: 20px;
+}
+
+.footer .footer-info .logo img {
+    max-height: 40px;
+    margin-right: 6px;
+}
+
+.footer .footer-info p {
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.footer .footer-info p strong {
+    color: #fff;
+}
+
+.footer .partners a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-right: 10px;
+    transition: 0.3s;
+}
+
+.footer .partners a img.sponsors-logo{
+    max-width: 100%;
+    height: auto;
+}
+
+.footer .partners a:hover {
+    color: #fff;
+    border-color: #fff;
+}
+
+.footer h4 {
+    font-size: 16px;
+    font-weight: bold;
+    position: relative;
+    padding-bottom: 12px;
+}
+
+.footer .footer-links {
+    margin-bottom: 30px;
+}
+
+.footer .footer-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.footer .footer-links ul li {
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+}
+
+.footer .footer-links ul li:first-child {
+    padding-top: 0;
+}
+
+.footer .footer-links ul a {
+    color: rgba(255, 255, 255, 0.6);
+    transition: 0.3s;
+    display: inline-block;
+    line-height: 1;
+}
+
+.footer .footer-links ul a:hover {
+    color: #fff;
+}
+
+.footer .copyright {
+    text-align: center;
+}

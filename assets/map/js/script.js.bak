@@ -1,0 +1,1908 @@
+$(window).resize(function () {
+    sizeLayerControl();
+});
+let external_layer = "External Layer";
+let internal_layer = "Internal Layer";
+
+
+let api_url = $("#api_url").val();
+let base_url = $("#base_url").val();
+let lang = $("#lang").val();
+let area_code = $("#area_code").val();
+let project_link = api_url + lang + "/all-geojson-municipality-projects";
+let point_of_interest_link = api_url + lang + "/point-of-interest/geojson";
+
+/*
+    Map
+ */
+
+var map, featureList, styleControlLayer, placeSearchArray = [], foundPlaceMarker;
+var circleDrawing = [];
+let poi_list = '', project_list = '', totalProject = 0, totalPOI = 0,
+    area_municipality_list = '';
+area_post_administrative_list = '',
+    area_suco_list = '';
+
+var markerClusters = L.markerClusterGroup({
+    spiderfyOnMaxZoom: true,
+    showCoverageOnHover: false,
+    zoomToBoundsOnClick: true,
+    disableClusteringAtZoom: 16
+});
+
+var markerList = [];
+
+let markerGreenIcon = L.icon({
+    iconUrl: '/css/map/images/marker-green.png',
+    iconSize: [20, 20]
+});
+
+let markerRedIcon = L.icon({
+    iconUrl: '/css/map/images/marker-red.png',
+    iconSize: [20, 20]
+});
+
+
+let contextMenuOptionItems = [
+    {
+        text: 'Dashboard',
+        callback: showDashboard
+    },
+    // {
+    //     text: 'Center map here',
+    //     callback: centerMap
+    // },
+    {
+        text: "Nearby projects",
+        callback: getProjectWithinRadius
+    },
+    {
+        text: "Nearby Point of interests",
+        callback: getPointOfInterestWithinRadius
+    }
+];
+
+
+function sizeLayerControl() {
+    $(".leaflet-control-layers").css("max-height", $("#map").height() - 50);
+} //sizeLayerControl
+
+
+$('#slide-menu').sidenav({edge: "left"});
+$('.slide-show-details').sidenav({edge: "right"});
+
+$('.tabs').tabs();
+$('.modal').modal({dismissible: false});
+$('.fixed-action-btn').floatingActionButton({
+    hoverEnabled: true
+});
+
+$(".close-me").on("click", function () {
+    $(this).parent().hide();
+});
+
+$('.tooltipped').tooltip();
+
+$('.tap-target').tapTarget();
+
+$("body").on("click", ".btn-sidenav-trigger", function () {
+    $('#slide-menu').sidenav('open');
+})
+
+
+$("#loading").hide();
+
+$("body").on("click", "#btn-help-geojson", function () {
+    $("#modal-help-geojson").modal('open');
+});
+
+$("#form-upload-geojson").on('submit', (event) => {
+    event.preventDefault();
+
+    var file = $("#input-upload-file").prop('files')[0];
+
+    if (file !== undefined) {
+        var fileUrl = window.URL.createObjectURL(file);
+        $.getJSON(fileUrl, function (data) {
+            loadUploadedGeoJsonFile(data, file.name, external_layer);
+        });
+        $("#input-upload-file").val("");
+        $(".file-path").val("");
+    } else {
+        alert("Upload geojson file to be loaded!");
+    }
+
+});
+
+$("body").on("click", ".view-random-quote", function () {
+    var randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
+    $(".daily-quote").html(randomQuote);
+
+    $("#modal-intro").modal('open');
+})
+
+
+$("body").on("click", ".btn-radius-place", function () {
+    var latitude = $(this).data("lat");
+    var longitude = $(this).data("lng");
+    var name = $(this).data("name");
+
+
+    if (foundPlaceMarker) {
+        map.removeLayer(foundPlaceMarker);
+    }
+
+    foundPlaceMarker = L.circle([latitude, longitude]);
+
+    foundPlaceMarker.setStyle({className: 'selected-marker'});
+    foundPlaceMarker.addTo(map);
+
+    var html = "<h6>" + name + "</h6>";
+
+    var popup = L.popup().setLatLng([latitude, longitude]).setContent(html);
+
+    foundPlaceMarker.bindPopup(popup);
+
+    M.toast({html: name + "<br>" + latitude + ":" + longitude});
+
+
+    map.flyTo([latitude, longitude], 15);
+
+    $("#featureModal").modal('close');
+
+});
+
+
+// console.log(quotes);
+
+$("body").on("change", ".checkbox-load-data", function () {
+    let isChecked = $(this).prop('checked');
+    let level = $(this).data("level");
+    let title = $(this).data("title");
+    let external_source_mapserver = $(this).data("map-server");
+    let external_source_mapserver_source = $(this).data("source");
+
+    if (isChecked) {
+        $(this).attr("disabled", true);
+        if (level <= 4) {
+            getMap(level, title, false);
+        }
+        if (external_source_mapserver == 1) {
+            //https://webgis.ipg.tl/arcgis/rest/services/Raster/Timor_Leste_Landslide_Susceptibility/MapServer/13
+            let mapserverLayer = L.esri.dynamicMapLayer({
+                url: external_source_mapserver_source
+            }, {});
+
+            mapserverLayer.addTo(map);
+            layerControl.addOverlay(mapserverLayer, title, "External Source");
+
+            mapserverLayer.on('loading', function (e) {
+                showPreLoader();
+            });
+            mapserverLayer.on('load', function (e) {
+                hidePreLoader();
+            });
+
+            mapserverLayer.bindPopup(function (error, featureCollection) {
+
+                if (error || featureCollection.features.length === 0) {
+                    return false;
+                } else {
+
+                    var properties = featureCollection.features[0].properties;
+
+                    var column = Object.keys(properties);
+
+                    console.log(column);
+
+                    let html = "<table class='table'>";
+
+                    for (var i = 0; i < column.length; i++) {
+
+                        $.each(properties, function (key, value) {
+                            html += "<tr >";
+                            html += "<td>" + key + "</td>";
+                            html += "<td>" + value + "</td>";
+                            html += "</tr>";
+                        });
+                        break;
+                    }
+
+                    html += '</table>';
+
+                    return html;
+                }
+            });
+
+        } else {
+            let filename = $(this).data("filename");
+            let layerName = $(this).data("layername");
+            $.getJSON(base_url + 'map/asset/geojson/' + filename, function (data) {
+                loadUploadedGeoJsonFile(data, layerName, internal_layer);
+            });
+        }
+        // $('.sidenav').sidenav('close');
+    }
+
+
+});
+$(".btn-view-dashboard").on("click", showDashboard);
+
+function showDashboard(e) {
+
+    $("#frame-dashboard").prop('src', base_url + 'dashboard');
+    $("#frame-dashboard").prop('display', 'block');
+    $("#modalDashboard").modal('open');
+
+} //showDashboard
+
+
+function centerMap(e) {
+    map.panTo(e.latlng);
+}
+
+
+function getProjectWithinRadius(e) {
+    Swal.fire({
+        title: 'Input radius',
+        icon: 'question',
+        input: 'text',
+        inputLabel: 'Radius in kilometer',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'You need to write something!'
+            }
+        },
+
+        inputValue: 1
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if ($.isNumeric(result.value)) {
+                let radius = result.value * 1000;
+                getProjectWithinRadiusAux(e.latlng, radius);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Number',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+
+        }
+    });
+
+    //
+}
+
+function getPointOfInterestWithinRadius(e) {
+    Swal.fire({
+        title: 'Input radius',
+        icon: 'question',
+        input: 'text',
+        inputLabel: 'Radius in kilometer',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'You need to write something!'
+            }
+        },
+
+        inputValue: 1
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if ($.isNumeric(result.value)) {
+                let radius = result.value * 1000;
+                getPointOfInterestWithinRadiusAux(e.latlng, radius);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid Number',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            }
+
+        }
+    });
+}
+
+function getProjectWithinRadiusAux(latLng, defaultRadius = 5000) {
+    let circle = L.circle(latLng, {
+        radius: defaultRadius,
+        contextmenu: true,
+        contextmenuItems: [{
+            text: 'Remove Me',
+            callback: function () {
+                map.removeLayer(circle);
+                M.toast({html: "Removed"});
+            }
+        }]
+    }).addTo(map);
+
+    circle.on('mousedown', function (event) {
+        //L.DomEvent.stop(event);
+        map.dragging.disable();
+        let {lat: circleStartingLat, lng: circleStartingLng} = circle._latlng;
+        let {lat: mouseStartingLat, lng: mouseStartingLng} = event.latlng;
+
+        map.on('mousemove', event => {
+            let {lat: mouseNewLat, lng: mouseNewLng} = event.latlng;
+            let latDifference = mouseStartingLat - mouseNewLat;
+            let lngDifference = mouseStartingLng - mouseNewLng;
+
+            let center = [circleStartingLat - latDifference, circleStartingLng - lngDifference];
+            circle.setLatLng(center);
+        });
+
+    });
+
+    circle.on("click", function (e) {
+        // let {lat: mouseNewLat, lng: mouseNewLng} = e.latlng;
+        var centerPoint = circle.getLatLng();
+        var radius = parseFloat(circle.getRadius()).toFixed(0);
+
+        calculateProjectWithinRadius(radius, centerPoint, circle);
+    });
+
+    map.on('mouseup', () => {
+        map.dragging.enable();
+        map.removeEventListener('mousemove');
+
+    });
+}
+
+function getPointOfInterestWithinRadiusAux(latLng, defaultRadius = 5000) {
+    let circle = L.circle(latLng, {
+        radius: defaultRadius,
+        contextmenu: true,
+        contextmenuItems: [{
+            text: 'Remove Me',
+            callback: function () {
+                map.removeLayer(circle);
+                M.toast({html: "Removed"});
+            }
+        }]
+    }).addTo(map);
+
+    circle.on('mousedown', function (event) {
+        //L.DomEvent.stop(event);
+        map.dragging.disable();
+        let {lat: circleStartingLat, lng: circleStartingLng} = circle._latlng;
+        let {lat: mouseStartingLat, lng: mouseStartingLng} = event.latlng;
+
+        map.on('mousemove', event => {
+            let {lat: mouseNewLat, lng: mouseNewLng} = event.latlng;
+            let latDifference = mouseStartingLat - mouseNewLat;
+            let lngDifference = mouseStartingLng - mouseNewLng;
+
+            let center = [circleStartingLat - latDifference, circleStartingLng - lngDifference];
+            circle.setLatLng(center);
+        });
+
+    });
+
+    circle.on("click", function (e) {
+        // let {lat: mouseNewLat, lng: mouseNewLng} = e.latlng;
+        var centerPoint = circle.getLatLng();
+        var radius = parseFloat(circle.getRadius()).toFixed(0);
+        getPointOfInterestRadius(radius, centerPoint, circle);
+    });
+
+    map.on('mouseup', () => {
+        map.dragging.enable();
+        map.removeEventListener('mousemove');
+
+    });
+}
+
+function calculateProjectWithinRadius(radius, radiusCenterPoint, layer) {
+    $.getJSON(project_link, (response) => {
+        var list = response.projects.features;
+        var str = "";
+        var counter = 0;
+        list.forEach(item => {
+            if (item.geometry != null) {
+                var latitude = item.geometry.coordinates[1];
+                var longitude = item.geometry.coordinates[0];
+
+                var placeLatLng = new L.LatLng(latitude, longitude);
+                distance_from_centerPoint = placeLatLng.distanceTo(radiusCenterPoint);
+                // console.log("radiusCenterPoint: " + radiusCenterPoint);
+                // console.log("distance_from_centerPoint: " + distance_from_centerPoint);
+                if (distance_from_centerPoint <= radius) {
+                    counter++;
+                    str += "<a href='#!' class='btn-radius-place' data-lat='" + latitude + "' data-lng='" + longitude + "' data-name='" + item.properties.name + "'> <strong>"
+                        + item.properties.name + "</strong></a> (" + latitude.toFixed(5) + "," + longitude.toFixed(5) + ")<hr>";
+                }
+
+            }
+        });
+
+        radius = (parseFloat(radius) / 1000).toFixed(2);
+
+        if (counter > 0) {
+            $("#feature-title").html("<h5>Project(s) beetween the circle <p><small>(Radius: " + radius + " km)</p></small></h3>");
+            $("#feature-info").html(str);
+            $("#featureModal").modal();
+            $("#featureModal").modal('open');
+        } else {
+            M.toast({html: "No projects found within radius " + radius + " km"});
+        }
+
+    });
+} //calculateProjectWithinRadius
+
+function getPointOfInterestRadius(radius, radiusCenterPoint, layer) {
+
+    $.getJSON(point_of_interest_link, (response) => {
+        var list = response.features;
+        var str = "";
+
+        var counter = 0;
+        list.forEach(item => {
+            if (item.geometry != null) {
+                var latitude = item.geometry.coordinates[1];
+                var longitude = item.geometry.coordinates[0];
+
+                var placeLatLng = new L.LatLng(latitude, longitude);
+                distance_from_centerPoint = placeLatLng.distanceTo(radiusCenterPoint);
+                // console.log("radiusCenterPoint: " + radiusCenterPoint);
+                // console.log("distance_from_centerPoint: " + distance_from_centerPoint);
+                if (distance_from_centerPoint <= radius) {
+                    counter++;
+                    str += "<a href='#!' class='btn-radius-place' data-lat='" + latitude + "' data-lng='" + longitude + "' data-name='" + item.properties.name + "'> <strong>"
+                        + item.properties.name + "</strong></a> (" + latitude.toFixed(5) + "," + longitude.toFixed(5) + ")<hr>";
+                }
+
+            }
+        });
+
+        radius = (parseFloat(radius) / 1000).toFixed(2);
+
+        if (counter > 0) {
+            $("#feature-title").html("<h5>Point of interest(s) beetween the circle <p><small>(Radius: " + radius + " km)</p></small></h3>");
+            $("#feature-info").html(str);
+            $("#featureModal").modal();
+            $("#featureModal").modal('open');
+        } else {
+            M.toast({html: "No point of interest found within radius " + radius + " km"});
+        }
+
+
+    });
+} //getPointOfInterestRadius
+
+
+/* Basemap Layers */
+
+let osm = new L.TileLayer(
+    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {attribution: 'Map data &copy; OpenStreetMap contributors'}
+);
+
+
+let imagery = L.tileLayer(
+    'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    {
+        attribution: 'Tiles &copy; <a href="https://www.esri.com">Esri</a> &mdash; Source: <a href="http://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer" target="_blank">Esri World_Imagery</a>'
+    });
+let topographic = L.esri.basemapLayer('Topographic');
+
+var southWest = L.latLng(-9.976965850016063, 123.60443115234376),
+    northEast = L.latLng(-7.944996434709155, 127.99896240234376),
+    mapMaxBounds = L.latLngBounds(southWest, northEast);
+
+map = L.map("map", {
+    // maxBounds: mapMaxBounds,
+    zoom: 9,
+    center: [-8.811796526762704, 125.82092285156251],
+    layers: [osm, markerClusters],
+    zoomControl: true,
+    attributionControl: false,
+    contextmenu: true,
+    contextmenuItems: contextMenuOptionItems,
+});
+
+
+var baseLayers = {
+
+    "Default Base Map": osm,
+    "Topographic Map": topographic,
+    "Sattelite Imagery": imagery
+
+};
+
+
+let dynamicMapLayer = L.esri.dynamicMapLayer({
+    url: 'https://webgis.ipg.tl/arcgis/rest/services/vector/Mineral_Map/MapServer',
+    attribution: "Hello World",
+    opacity: 0.5,
+    disableCache: false,
+
+});
+
+dynamicMapLayer.on('loading', function (e) {
+    showPreLoader();
+});
+dynamicMapLayer.on('load', function (e) {
+    hidePreLoader();
+});
+//
+//
+// dynamicMapLayer.bindPopup(function (error, featureCollection) {
+//
+//     if (error || featureCollection.features.length === 0) {
+//         return false;
+//     } else {
+//
+//         var properties = featureCollection.features[0].properties;
+//
+//         var column = Object.keys(properties);
+//
+//         console.log(featureCollection);
+//
+//         let html = "<table class='table'>";
+//
+//         for (var i = 0; i < column.length; i++) {
+//
+//             $.each(properties, function (key, value) {
+//                 html += "<tr >";
+//                 html += "<td>" + key + "</td>";
+//                 html += "<td>" + value + "</td>";
+//                 html += "</tr>";
+//             });
+//             break;
+//         }
+//
+//         html += '</table>';
+//         return html;
+//     }
+// });
+//
+//
+// dynamicMapLayer.addTo(map);
+
+// styleControlLayer = L.Control.styledLayerControl(baseMaps);
+var pointOfInterestLayer = L.geoJson(null);
+// var municipalityLayer = L.geoJson(null);
+var projectLayer = L.geoJson(null);
+var healthFacilityLayer = L.geoJson(null);
+var populatedPlaceLayer = L.geoJson(null);
+
+
+var groupedOverlays = {
+    "Internal Layer": {
+        "Projects": projectLayer,
+        "Point of interests": pointOfInterestLayer,
+        "Health facilities": healthFacilityLayer,
+        "Populated places": populatedPlaceLayer,
+    }
+};
+
+var pointOfInterestLayerItem = L.geoJson(null, {
+    onEachFeature: function (feature, layer) {
+        if (feature.properties) {
+            let poi = feature.properties;
+            let html = '<div class="card">';
+            html += '<div class="card-body">';
+            html += '<h3>Name:   ' + poi.name + '</h3>';
+            html += '<p>Phone: ' + (poi.phone == null ? "<span class='danger'>No phone</span>" : poi.phone) + '</p>';
+            html += '<p>Address: ' + (poi.address == null ? "<span class='danger'>No address</span>" : poi.address) + '</p>';
+            html += '<p>Municipality: ' + poi.municipality + '</p>';
+            html += '<p>Administrative Post: ' + (poi.administrative_post == null ? "<span class='danger'>No data</span>" : poi.administrative_post) + '</p>';
+            html += '<p>Suco: ' + (poi.suco == null ? "<span class='danger'></span>" : poi.suco) + '</p>';
+            html += '<p>Village: ' + (poi.village == null ? "<span class='danger'></span>" : poi.village) + '</p>';
+            html += '<p>Website: ' + (poi.website == null ? "<span class='danger'></span>" : poi.website) + '</p>';
+            html += '<p>details: ' + (poi.details == null ? "<span class='danger'></span>" : poi.details) + '</p>';
+            html += '</div>';
+            html += '</div>';
+
+            info_panel_item = '<li class="collection-item hoverable">';
+            info_panel_item += '<a href="#!" class="secondary-content coordenate-point-item" data-lat="' + poi.latitude + '" ' +
+                'data-lng="' + poi.longitude + '"><i class="material-icons">location_on</i></a>';
+            info_panel_item += '<h5 class="title">' + poi.name + '</h5>';
+            info_panel_item += '<p>Municipality: ' + poi.municipality + '</p>';
+            info_panel_item += '<p>Administrative Post: ' + (poi.administrative_post == null ? "" : poi.administrative_post) + '</p>';
+            info_panel_item += '<p>Suco: ' + (poi.suco == null ? "" : poi.suco) + '</p>';
+            info_panel_item += '<p>Village: ' + (poi.aldeia == null ? "" : poi.aldeia) + '</p>';
+            info_panel_item += '<p>Address: ' + (poi.address == null ? "<span class='danger'>No address</span>" : poi.address) + '</p>';
+            info_panel_item += '<p>Phone: ' + (poi.phone == null ? "<span class='danger'>No phone</span>" : poi.phone) + '</p>';
+            info_panel_item += '<p>Website: ' + (poi.website == null ? "<span class='danger'>No website</span>" : poi.website) + '</p>';
+
+            info_panel_item += '</li>';
+
+            poi_list += info_panel_item;
+
+            layer.on({
+                click: function (e) {
+                    // html += '<p>details: ' + (poi.details == null ? "<span class='danger'></span>" : poi.details) + '</p>';
+                    $("#feature-info").html(html);
+
+                    // $("#featureModal").modal('open');
+                    $(".slide-show-details").html(html);
+                    $(".slide-show-details").sidenav('open');
+                }
+            });
+
+            layer.bindTooltip('<h5>' + poi.name + '</h5>', {
+                closeButton: false, offset: L.point(0, -20),
+                direction: 'right',
+                permanent: false,
+                sticky: true,
+                offset: [10, 0],
+                opacity: 0.75,
+                className: 'leaflet-tooltip'
+            });
+
+            placeSearchArray.push({
+                name: layer.feature.properties.name,
+                address: layer.feature.properties.address,
+                source: "point_of_interest",
+                id: L.stamp(layer),
+                lat: layer.feature.geometry.coordinates[1],
+                lng: layer.feature.geometry.coordinates[0]
+            });
+        }
+    }
+});
+
+var healthFacilityLayerItem = L.geoJson(null, {
+    onEachFeature: function (feature, layer) {
+        if (feature.properties) {
+
+            layer.bindTooltip('<h5>' + feature.properties.name + '</h5>', {
+                closeButton: false, offset: L.point(0, -20),
+                direction: 'right',
+                permanent: false,
+                sticky: true,
+                offset: [10, 0],
+                opacity: 0.75,
+                className: 'leaflet-tooltip'
+            });
+        }
+    }
+});
+var populatedPlaceLayerItem = L.geoJson(null, {
+    onEachFeature: function (feature, layer) {
+        if (feature.properties) {
+
+            layer.bindTooltip('<h5>' + feature.properties.name + '</h5>', {
+                closeButton: false, offset: L.point(0, -20),
+                direction: 'right',
+                permanent: false,
+                sticky: true,
+                offset: [10, 0],
+                opacity: 0.75,
+                className: 'leaflet-tooltip'
+            });
+        }
+    }
+});
+
+
+function viewAreaProjects(feature) {
+    let area_id = feature.properties.ID_;
+    if (feature.properties.LEVEL == 2) {
+        getProjects(area_id);
+    } else if (feature.properties.LEVEL == 3) {
+        showAreaInformation(area_id);
+    }
+}
+
+function viewPointOfInterests(feature) {
+    let area_id = feature.properties.ID_;
+    getPointOfInterests(area_id);
+}
+
+
+var projectLayerItem = L.geoJson(null, {
+    style: function (feature) {
+        return {color: "#ffb30f"};
+    },
+    pointToLayer: function (feature, latlng) {
+
+        let projectIcon = feature.properties.icon;
+
+        if (projectIcon != null) {
+            let icon = new L.icon({
+                iconSize: [25, 25], // width and height of the image in pixels
+                shadowSize: [35, 20], // width, height of optional shadow image
+                iconAnchor: [12, 12], // point of the icon which will correspond to marker's location
+                shadowAnchor: [12, 6],  // anchor point of the shadow. should be offset
+                popupAnchor: [0, 0], // point from which the popup should open relative to the iconAnchor
+                // iconUrl: "/images/teste_icon.png" //feature.properties.icon
+                iconUrl: projectIcon
+            });
+            return L.marker(latlng, {icon: icon});
+        }
+        return L.marker(latlng);
+    },
+    onEachFeature: function (feature, layer) {
+        if (feature.properties) {
+            var popupText = 'geometry type: ' + feature.geometry.type;
+            if (feature.properties.color) {
+                popupText += '<br/>color: ' + feature.properties.color;
+            }
+            let project = feature.properties;
+
+            let html = '<div class="card">';
+            if (project.photo != null) {
+                html += '<img width="250px" src="' + project.photo + '" class="card-img-top" alt="' + project.name + '">';
+            }
+
+            html += '<div class="card-body">';
+            html += '<h5 class="card-title">' + project.name + '</h5>';
+            html += '<p>Project code:   ' + project.code + '</p>';
+            html += '<p>Project Title:   ' + project.name + '</p>';
+            html += '<p>Project Owner:   ' + project.owner + '</p>';
+            html += '<p>Project Date:    ' + project.start_date + ' - ' + project.end_date + '</p>';
+            html += '<p>Project Contact Information: ' + project.contact_information + '</p>';
+            html += '<p>Status: ' + (status == 0 ? "<span>IN-ACTIVE</span>" : "ACTIVE") + '</p>';
+            html += '<p>Budget:  $' + project.budget + '</p>';
+            html += '</div>';
+
+            html += '</div>';
+
+            if (project.status == 0) {
+                project_list_item_status_class = 'project-in-active';
+            } else {
+                project_list_item_status_class = 'project-active';
+            }
+
+            info_panel_item = '<li class="collection-item hoverable ' + project_list_item_status_class + '">';
+            info_panel_item += '<a href="#!" class="secondary-content  coordenate-point-item " data-lat="' + project.latitude + '" ' +
+                'data-lng="' + project.longitude + '"><i class="material-icons">location_on</i></a>';
+            if (project.photo != null) {
+                info_panel_item += '<img src="' + project.photo + '" class="responsive-img" alt="' + project.name + '">';
+                info_panel_item += '<span class="title">' + project.name + '</span>';
+                info_panel_item += '<p class="project-date">Project Date:    ' + project.start_date + ' - ' + project.end_date + '</p>';
+                info_panel_item += '<br>' + project.budget + '</p>';
+
+
+            } else {
+                info_panel_item += '<span class="title">' + project.name + '</span>';
+                info_panel_item += '<p class="project-date">Project Date:    ' + project.start_date + ' - ' + project.end_date + '</p>';
+                info_panel_item += '<br>' + project.budget + '</p>';
+
+            }
+
+            info_panel_item += '</li>';
+
+            project_list += info_panel_item;
+
+            layer.bindTooltip(html, {
+                closeButton: false, offset: L.point(0, -20),
+                direction: 'right',
+                permanent: false,
+                sticky: true,
+                offset: [10, 0],
+                opacity: 0.75,
+                className: 'leaflet-tooltip'
+            });
+
+
+            layer.on({
+                click: function (e) {
+                    let html = '<div class="card">';
+                    if (project.photo != null) {
+                        html += '<div style="text-align: center"> <img width="50%" src="' + project.photo + '" class="card-img-top" alt="' + project.name + '"></div>';
+                    }
+
+                    html += '<div class="card-body">';
+                    html += '<h5 class="card-title">' + project.name + '</h5>';
+                    html += '<p>Project code:   ' + project.code + '</p>';
+                    html += '<p>Project Title:   ' + project.name + '</p>';
+                    html += '<p>Project Owner:   ' + project.owner + '</p>';
+                    html += '<p>Project Date:    ' + project.start_date + ' - ' + project.end_date + '</p>';
+                    html += '<p>Project Contact Information: ' + project.contact_information + '</p>';
+                    html += '<p>Project Description</p>';
+                    html += '<p>' + project.description + '</p>';
+                    html += '<p>Status: ' + (status == 0 ? "<span>IN-ACTIVE</span>" : "ACTIVE") + '</p>';
+                    html += '<p>Budget:  $' + project.budget + '</p>';
+                    html += '</div>';
+
+                    html += '</div>';
+
+                    //
+                    // $("#feature-title").html(project.area_name);
+                    // $("#feature-info").html(html);
+                    // $("#featureModal").modal();
+                    // $("#featureModal").modal('open');
+
+                    $(".slide-show-details").html(html);
+                    $(".slide-show-details").sidenav('open');
+                },
+                remove: function (e) {
+                    $("#feature-title").html("");
+                    $("#feature-info").html("");
+                    $("#featureModal").modal("close");
+                }
+            });
+        }
+
+    }
+});
+
+getAllPointOfInterests("");
+
+getAllProjects("");
+
+getHealthFacilities();
+
+getPopulatedPlaces();
+
+
+// getMap(2, "Municipality");
+
+
+function getMap(level, title) {
+
+    switch (level) {
+        case 1:
+        case 2:
+        // $.getJSON(api_url + 'maps/' + level + '/geojson', function (data) {
+        //     municipalityLayerItem.addData(data);
+        //     markerClusters.addLayer(municipalityLayerItem);
+        //     map.flyToBounds(municipalityLayerItem.getBounds());
+        //     $(".info-panel").show();
+        //     $(".info-list").html(area_municipality_list);
+        //     layerControl.addOverlay(municipalityLayerItem, "Municipality", "Internal Layers");
+        // });
+        // break;
+        case 3:
+        case 4:
+            getAreaMap(level, title);
+            break;
+        case 5:
+            getAllProjects(title);
+            $("#searchbox").css('display', "block");
+            break;
+        case 6:
+            getAllPointOfInterests(title);
+            $("#searchbox").css('display', "block");
+            break;
+        default:
+            M.toast({html: title + " Not found!"});
+            break;
+    }
+
+}
+
+function getAreaMap(level, title) {
+    $.getJSON(api_url + 'maps/' + level + '/geojson', function (data) {
+        loadMapGeoJson(data, title, internal_layer, level);
+    });
+}
+
+function getAllPointOfInterests(title) {
+    $.getJSON(point_of_interest_link, function (data) {
+        totalPOI = data.total;
+        if (data.total > 0) {
+            pointOfInterestLayerItem.addData(data.coordenates);
+        }
+
+    });
+}
+
+function getHealthFacilities() {
+    $.getJSON(base_url + 'map/asset/geojson/humanitarian_data/hotosm_tls_health_facilities_points.json', function (data) {
+        healthFacilityLayerItem.addData(data);
+    });
+}
+
+function getPopulatedPlaces() {
+    $.getJSON(base_url + 'map/asset/geojson/humanitarian_data/hotosm_tls_populated_places_points.json', function (data) {
+        console.log(data);
+        populatedPlaceLayerItem.addData(data);
+    });
+}
+
+
+function getAllProjects(title) {
+    // Load project into layer
+    $.getJSON(project_link, function (data) {
+        totalProject = data.total_project;
+        if (totalProject > 0) {
+            projectLayerItem.addData(data.projects);
+        } else {
+            M.toast(
+                {
+                    html: 'No Projects!',
+                    className: 'rounded'
+                }
+            );
+        }
+
+
+    });
+}
+
+
+var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, {collapsed: false}).addTo(map);
+
+
+/** Add control */
+
+
+// map.addControl(this.createInputButton('topright', 'btn btn-default btn-load-file', '<i class="material-icons">cloud_upload</i>'));
+
+// addDrawControl();
+
+addMeasureControl();
+
+addRulerControl();
+
+L.control.scale({position: "topright"}).addTo(this.map);
+
+
+function addMeasureControl() {
+
+    L.control.measure({
+        position: 'topleft',
+        primaryLengthUnit: "kilometers",
+        secondaryLengthUnit: "meters",
+        primaryAreaUnit: "hectares",
+        secondaryAreaUnit: "sqmeters"
+    }).addTo(map);
+}
+
+function addRulerControl() {
+    let rulerOptions = {
+        position: 'topleft',         // Leaflet control position option
+        circleMarker: {               // Leaflet circle marker options for points used in this plugin
+            color: 'red',
+            radius: 2
+        },
+        lineStyle: {                  // Leaflet polyline options for lines used in this plugin
+            color: 'red',
+            dashArray: '1,6'
+        },
+        lengthUnit: {                 // You can use custom length units. Default unit is kilometers.
+            display: 'km',              // This is the display value will be shown on the screen. Example: 'meters'
+            decimal: 2,                 // Distance result will be fixed to this value.
+            factor: null,               // This value will be used to convert from kilometers. Example: 1000 (from kilometers to meters)
+            label: 'Distance:'
+        },
+        angleUnit: {
+            display: '&deg;',           // This is the display value will be shown on the screen. Example: 'Gradian'
+            decimal: 2,                 // Bearing result will be fixed to this value.
+            factor: null,                // This option is required to customize angle unit. Specify solid angle value for angle unit. Example: 400 (for gradian).
+            label: 'Bearing:'
+        }
+    };
+    L.control.ruler(rulerOptions).addTo(map);
+}
+
+
+let populationDensityLegendControl;
+
+function addPopulationDensityLegendControl() {
+
+    populationDensityLegendControl = L.control({position: 'bottomright'});
+
+    populationDensityLegendControl.onAdd = function (map) {
+
+        var div = L.DomUtil.create('div', 'population-density'),
+            dimesions = [0, 50000, 55000, 60000, 65000, 70000, 75000, 100000],
+            labels = [];
+
+        div.innerHTML += '<h6 class="total_population_legend">' + str_total_population + '</h6>';
+        let ul = "<ul>";
+        // loop through our density intervals and generate a label with a colored square for each interval
+        for (var i = 0; i < dimesions.length; i++) {
+            ul +=
+                '<li><i style="background:' + getPopulationDensityColor(dimesions[i] + 1) + '"></i> ' +
+                dimesions[i] + (dimesions[i + 1] ? '-' + dimesions[i + 1] + '<br>' : '+')
+                + '</li>';
+        }
+        div.innerHTML += ul;
+
+        return div;
+    };
+
+    populationDensityLegendControl.addTo(map);
+}
+
+
+/** End add control */
+
+
+let areaGeojson;
+let totalAreaOfTimorLeste = 0;
+let total_population = 0;
+
+
+function loadMapGeoJson(data, filename, groupName, level = 0, fitZoom = true) {
+    var itemName = filename.split('.')[0];
+
+    // console.log(data);
+    totalAreaOfTimorLeste = 0;
+    areaGeojson = L.geoJson(data, {
+        style: function (feature) {
+            if (level == 2 || level == 3) {
+                return {
+                    fillColor: getPopulationDensityColor(feature.properties.POPULATION.total_population),
+                    weight: 2,
+                    opacity: 1,
+                    color: 'white',
+                    dashArray: '3',
+                    fillOpacity: 0.7
+                };
+            }
+            return {color: "#ffb30f"};
+        },
+        onEachFeature: function (feature, layer) {
+
+            let array_of_area = feature.geometry.coordinates;
+            let total_area = 0;
+            let geometry_type = feature.geometry.type;
+
+            if (geometry_type == "Polygon") {
+                let polygon = turf.polygon(feature.geometry.coordinates);
+                total_area = (turf.area(polygon) / 1000000).toFixed(2);
+            } else if (geometry_type == "MultiPolygon") {
+                for (let i = 0; i < array_of_area.length; i++) {
+                    let coordinates = array_of_area[i];
+                    let polygon = turf.polygon(coordinates);
+                    total_area = (turf.area(polygon) / 1000000).toFixed(2);
+                }
+            }
+
+            totalAreaOfTimorLeste += parseFloat(total_area);
+
+            layer.on('mouseover', function (e) {
+                layer.setStyle({
+                    weight: 5,
+                    fillOpacity: 0.7
+                });
+
+                if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                    layer.bringToFront();
+                }
+                // info.update(layer.feature.properties);
+            });
+            layer.on('mouseout', function (e) {
+                areaGeojson.resetStyle(e.target);
+                // info.update();
+            });
+
+
+            if (feature.properties) {
+                var popupText = 'geometry type: ' + feature.geometry.type;
+
+                if (feature.properties.color) {
+                    popupText += '<br/>color: ' + feature.properties.color;
+                }
+                let html = '';
+                let centerLayer = layer.getBounds().getCenter();
+
+                let total_area_text = " (" + total_area + " km<sup>2</sup>)";
+                if (level == 2) {
+                    let population = feature.properties.POPULATION;
+                    html = "<div>" +
+                        feature.properties.NAME1_ +
+                        "<br/>Area: " + total_area_text +
+                        "<br/>Population: " + numberWithPoint(population.total_population) + " (" + population.source + " " + population.time_period + ")" +
+                        "<br/>Project: " + feature.properties.PROJECTS + "</div>";
+
+                    total_population += parseFloat(population.total_population);
+
+                    // layer.bindContextMenu({
+                    //     contextmenu: true,
+                    //     contextmenuInheritItems: false,
+                    //     contextmenuItems: [
+                    //         {
+                    //             text: 'Projects', callback: (() => {
+                    //                 viewAreaProjects(feature);
+                    //             })
+                    //         },
+                    //
+                    //         {separator: true},
+                    //         {
+                    //             text: 'Point of interests', callback: (() => {
+                    //                 viewPointOfInterests(feature);
+                    //             })
+                    //         },
+                    //     ]
+                    // });
+
+                    info_panel_item = '<li class="collection-item hoverable">';
+                    info_panel_item += '<a href="#!" class="secondary-content  coordenate-point-item-area-municipality " data-lat="' + centerLayer.lat + '" ' +
+                        'data-lng="' + centerLayer.lng + '"><i class="material-icons">location_on</i></a>';
+                    info_panel_item += '<span class="title">' + feature.properties.NAME1_ + total_area_text + '</span>';
+                    info_panel_item += "<p>(" + (feature.properties.PROJECTS > 1 ? feature.properties.PROJECTS + " Projects" : feature.properties.PROJECTS + " Project") + ")</p>";
+
+                    info_panel_item += '</li>';
+
+                    area_municipality_list += info_panel_item;
+
+                } else {
+
+                    if (level == 3) {
+                        let population = feature.properties.POPULATION;
+
+                        html = "<div>" +
+                            feature.properties.NAME1_ +
+                            "<br/>Area: " + total_area_text +
+                            "<br/>Population: " + population.total_population + " (" + population.source + " " + population.time_period + ")"
+
+                    } else {
+                        html = "<div>" +
+                            feature.properties.NAME1_ +
+                            "<br/>Area: " + total_area_text + "</div>";
+                    }
+
+
+                    info_panel_item = '<li class="collection-item hoverable ">';
+                    info_panel_item += '<a href="#!" class="secondary-content  coordenate-point-item-area" data-lat="' + centerLayer.lat + '" ' +
+                        'data-lng="' + centerLayer.lng + '"><i class="material-icons">location_on</i></a>';
+                    info_panel_item += '<span class="title">' + feature.properties.NAME1_ + total_area_text + '</span>';
+
+                    info_panel_item += '</li>';
+
+
+                    if (level == 3) {
+                        area_post_administrative_list += info_panel_item;
+                    } else {
+                        area_suco_list += info_panel_item;
+                    }
+
+                }
+
+                layer.bindTooltip(html, {
+                    closeButton: false, offset: L.point(0, -20),
+                    direction: 'right',
+                    permanent: false,
+                    sticky: true,
+                    offset: [10, 0],
+                    opacity: 1,
+                    className: 'leaflet-tooltip'
+                });
+
+
+                layer.on({
+                    click: function (e) {
+                        let area_id = feature.properties.ID_;
+
+                        // map.fitBounds(e.target.getBounds());
+
+                        if (level == 2) {
+                            getProjects(area_id);
+                        } else if (level == 3) {
+                            showPostoInformation(area_id);
+                        } else if (level == 4) {
+                            showSucoInformation(area_id);
+                        }
+                    },
+                    remove: function (e) {
+                        $("#feature-title").html("");
+                        $("#feature-info").html("");
+                        $("#featureModal").modal("close");
+                    }
+                });
+            }
+
+        }
+    });
+
+    areaGeojson.addTo(map);
+    areaGeojson.StyledLayerControl = {
+        removable: true,
+        visible: false
+    }
+
+    if (fitZoom) {
+        map.flyToBounds(areaGeojson.getBounds());
+    }
+    var strGroup = "";
+    if (groupName != null && groupName !== undefined) {
+        strGroup = groupName;
+    } else {
+        strGroup = itemName;
+    }
+
+    layerControl.addOverlay(areaGeojson, itemName, strGroup);
+
+    if (level == 2) {
+        $(".info-panel").show();
+        $(".info-list").html(area_municipality_list);
+    } else if (level == 3) {
+        $(".info-panel").show();
+        $(".info-list").html(area_post_administrative_list);
+    } else {
+        $(".info-panel").show();
+        $(".info-list").html(area_suco_list);
+    }
+
+    $(".info-list").hide();
+
+    if (populationDensityLegendControl == null) {
+        //total_population_legend
+        addPopulationDensityLegendControl();
+
+        $(".total_population_legend").html(str_total_population + " <br/>(" + numberWithPoint(total_population) + ")");
+        $("#total_population").val(total_population);
+    }
+
+
+    M.toast({
+        html: "Total area: " + totalAreaOfTimorLeste.toFixed(2) + ' km<sup>2</sup>',
+        className: 'rounded'
+    })
+
+}// loadMapGeoJson
+
+
+function loadUploadedGeoJsonFile(data, filename, groupName, level = 0, fitZoom = true) {
+
+    var itemName = data.name == undefined ? filename.split('.')[0] : data.name;
+
+    totalAreaOfTimorLeste = 0;
+    geometry_type = "";
+    let geoJsonFileResult = L.geoJson(data, {
+        style: function (feature) {
+            if (feature.properties.color != null) {
+                return {color: feature.properties.color};
+            }
+        },
+        onEachFeature: function (feature, layer) {
+
+            let array_of_area = feature.geometry.coordinates;
+            let total_area = 0;
+            geometry_type = feature.geometry.type;
+
+            if (geometry_type == "Polygon") {
+                let polygon = turf.polygon(feature.geometry.coordinates);
+                total_area = (turf.area(polygon) / 1000000).toFixed(2);
+
+                // console.log('Total area of ' + feature.properties.NAME1_ + ' : ' + total_area + ' area in square meters');
+
+                // console.log('Total area of ' + feature.properties.NAME1_ + ' : ' + total_area + ' area in square kilometers');
+
+            } else if (geometry_type == "MultiPolygon") {
+                // console.log("Begin MultiPolygon");
+                for (let i = 0; i < array_of_area.length; i++) {
+                    let coordinates = array_of_area[i];
+                    let polygon = turf.polygon(coordinates);
+                    //
+                    total_area = (turf.area(polygon) / 1000000).toFixed(2);
+                    // console.log("area: " + turf.area(polygon));
+                }
+                // console.log("End MultiPolygon");
+                // console.log('Total area of ' + feature.properties.NAME1_ + ' : ' + total_area + ' area in square meters');
+
+                // console.log('Total area of ' + feature.properties.NAME1_ + ' : ' + total_area + ' area in square kilometers');
+            }
+
+            totalAreaOfTimorLeste += parseFloat(total_area);
+
+            var popupText = 'geometry type: ' + feature.geometry.type;
+
+            if (feature.properties.color) {
+                popupText += '<br/>color: ' + feature.properties.color;
+            }
+            //
+            // layer.bindTooltip('<h5>' + poi.name + '</h5>', {
+            //     closeButton: false, offset: L.point(0, -20),
+            //     direction: 'right',
+            //     permanent: false,
+            //     sticky: true,
+            //     offset: [10, 0],
+            //     opacity: 0.75,
+            //     className: 'leaflet-tooltip'
+            // });
+            var properties = layer.feature.properties;
+
+            var column = Object.keys(properties);
+
+            console.log(column);
+
+            var html = itemName.toUpperCase() + "<hr/><ul>";
+
+            for (var i = 0; i < column.length; i++) {
+
+                $.each(properties, function (key, value) {
+                    html += "<li>" + key + " - " + value + "</li>";
+                });
+                break;
+            }
+
+            html += "</ul>";
+
+
+            layer.on({
+                click: function (e) {
+
+                    $("#feature-title").html(itemName.toUpperCase());
+
+                    $("#feature-info").html(html);
+                    $("#featureModal").modal();
+                    $("#featureModal").modal('open');
+                },
+                mouseover: function (e) {
+
+                    layer.bindPopup(html).openPopup();
+                },
+                mouseout: function (e) {
+                    layer.bindPopup(html).closePopup();
+                },
+                remove: function (e) {
+                    $("#feature-title").html("");
+                    $("#feature-info").html("");
+                    $("#featureModal").modal("close");
+                }
+            });
+
+        }
+    });
+
+    // geoJsonFileResult.addTo(map);
+
+    if (geometry_type == "Point") {
+        markerClusters.addLayer(geoJsonFileResult);
+    } else {
+        geoJsonFileResult.addTo(map);
+
+    }
+
+    geoJsonFileResult.StyledLayerControl = {
+        removable: true,
+        visible: false
+    }
+
+
+    if (fitZoom) {
+        map.flyToBounds(geoJsonFileResult.getBounds());
+    }
+    var strGroup = "";
+    if (groupName != null && groupName !== undefined) {
+        strGroup = groupName;
+    } else {
+        strGroup = itemName;
+    }
+
+    if (geometry_type == "Point") {
+        layerControl.addOverlay(markerClusters, itemName, strGroup);
+    } else {
+        layerControl.addOverlay(geoJsonFileResult, itemName, strGroup);
+    }
+
+
+    if (geometry_type == "Polygon" && geometry_type == "MultiPolygon") {
+        M.toast({
+            html: "Total area: " + totalAreaOfTimorLeste.toFixed(2) + ' km<sup>2</sup>',
+            className: 'rounded'
+        })
+    }
+
+
+}// loadUploadedGeoJsonFile
+
+$("body").on("click", '.coordenate-point-item', function () {
+    let lat = $(this).data('lat');
+    let lng = $(this).data('lng');
+
+    map.flyTo([lat, lng], 17);
+});
+
+$("body").on("click", '.coordenate-point-item-area', function () {
+    let lat = $(this).data('lat');
+    let lng = $(this).data('lng');
+
+    map.flyTo([lat, lng], 15);
+});
+
+$("body").on("click", '.coordenate-point-item-area-municipality', function () {
+    let lat = $(this).data('lat');
+    let lng = $(this).data('lng');
+
+    map.flyTo([lat, lng], 12);
+});
+
+
+$("body").on("click", '.coordenate-point-item-poi', function () {
+    let lat = $(this).data('lat');
+    let lng = $(this).data('lng');
+
+    let tempMarker = L.marker([lat, lng]);
+
+    tempMarker.addTo(map);
+
+    tempMarker.on("click", function () {
+        map.removeLayer(tempMarker);
+    })
+
+    map.flyTo([lat, lng], 13);
+
+    $(".modal").model('close');
+
+});
+
+function load_project_by_area(area_id) {
+    $.ajax({
+        url: api_url + lang + '/project-by-location/' + area_id,
+        type: "get",
+        success: function (res) {
+
+            $("#feature-info").html(html);
+            $("#featureModal").modal();
+            $("#featureModal").modal('open');
+
+            // $("#feature-title").html(feature.properties.name);
+            // $("#feature-info").html(html);
+            // $("#featureModal").modal();
+            // $("#featureModal").modal('open');
+
+        }
+    })
+}//load_project_by_area
+
+function getProjects(area_id, showModal = true) {
+    $.ajax({
+        url: api_url + lang + "/municipality-projects-" + area_id,
+        type: "get",
+        success: function (res) {
+
+            // let mMarker;
+            let counter = 0;
+            let table = '<table class="table"><thead><tr><th>Project Name</th><th>Project Location</th><th>Project Budget</th><th>Date</th><th>Status</th></thead><tbody>';
+            if (res.length > 0) {
+                for (let i = 0; i < res.length; i++) {
+
+                    let item = res[i];
+                    if (item.id != null) {
+                        counter++;
+                        table += '<tr>';
+
+                        if (item.latitude !== null && item.longitude !== null) {
+                            table += '<td><a href="#!" data-latitude="' + item.latitude + '" data-longitude="' + item.longitude + '" class="btn-view-project" data-id="' + item.id + '">' + item.title + '</a></td>';
+                        } else {
+                            table += '<td> ' + item.project.title + '</td>';
+                        }
+
+                        if (item.latitude !== null && item.longitude !== null) {
+                            table += '<td>' + item.location.area_name + ' (' + item.latitude + '-' + item.longitude + ')' + '</td>';
+                        } else {
+                            table += '<td>' + item.location.area_name + ' (No coordinates)' + '</td>';
+                        }
+
+
+                        table += '<td>' + item.budget + '</td>';
+                        table += '<td>' + item.start_date + ' - ' + item.end_date + '</td>';
+                        if (item.status == 1) {
+                            table += '<td><span class="text-info">ACTIVE</span></td>';
+                            // if (item.project.latitude !== null && item.project.longitude !== null) {
+                            //     mMarker = L.marker([item.project.latitude, item.project.longitude], {icon: markerGreenIcon});//.bindPopup(legend)
+                            // }
+
+                        } else {
+                            table += '<td><span class="text-warning">IN-ACTIVE</span></td>';
+                            // if (item.project.latitude !== null && item.project.longitude !== null) {
+                            //     mMarker = L.marker([item.project.latitude, item.project.longitude], {icon: markerRedIcon});//.bindPopup(legend)
+                            // }
+
+                        }
+                        table += '</tr>';
+
+                        // if (mMarker !== undefined) {
+                        //     // console.log(mMarker);
+                        //     // console.log(item.project);
+                        //     // mMarker.projectId = item.project.id;
+                        //     // mMarker.on("click", showModalInfo);
+                        //     markerClusters.addLayer(mMarker);
+                        // }
+                        //
+                        //
+
+                    }
+                }
+
+                // map.addLayer(markerClusters);
+                //
+                // console.log(markerClusters.getBounds().N);
+                // if (markerClusters.getBounds().N !== undefined) {
+                //     map.flyToBounds(markerClusters.getBounds());
+                // }
+
+            }
+            table += '</tbody></table>';
+
+
+            let municipalityName = $("h5.municipality-name").text();
+            if (counter > 1) {
+                $("h5.municipality-name").html(municipalityName + ": " + counter + " projects");
+            } else {
+                $("h5.municipality-name").html(municipalityName + ": " + counter + " project");
+            }
+
+            if (showModal) {
+                // $("#feature-info").html(table);
+                // $("#featureModal").modal();
+                // $("#featureModal").modal('open');
+
+                $(".slide-show-details").html(table);
+                $(".slide-show-details").sidenav('open');
+            }
+
+
+        }
+    })
+} //getProjects
+
+
+function getPointOfInterests(area_id) {
+    $.ajax({
+        url: api_url + lang + "/municipality/" + area_id + "/point-of-interest",
+        type: "get",
+        success: function (res) {
+            if (res.point_of_interests != null) {
+                let point_of_interests = res.point_of_interests;
+
+                if (point_of_interests.length > 0) {
+                    let html = '<div class="input-field"><i class="material-icons prefix">search</i>';
+                    html += '<input id="input-search-poi" type="text" data-length="150">';
+                    html += '</div>';
+
+                    html += '<ul class="collection collection-poi">';
+                    for (let i = 0; i < point_of_interests.length; i++) {
+                        let poi = point_of_interests[i];
+
+                        let poi_list_item = '<li class="collection-item hoverable">';
+                        poi_list_item += '<a href="#!" class="secondary-content  coordenate-point-item-poi" data-lat="' + poi.latitude + '" ' +
+                            'data-lng="' + poi.longitude + '"><i class="material-icons">location_on</i></a>';
+                        poi_list_item += '<h5 class="title">' + poi.name + '</h5>';
+
+                        poi_list_item += '<p>Municipality: ' + poi.municipality + '</p>';
+                        poi_list_item += '<p>Administrative Post: ' + (poi.administrative_post == null ? "<span class='danger'>No data</span>" : poi.administrative_post) + '</p>';
+                        poi_list_item += '<p>Suco: ' + (poi.suco == null ? "<span class='danger'></span>" : poi.suco) + '</p>';
+                        poi_list_item += '<p>Village: ' + (poi.aldeia == null ? "<span class='danger'></span>" : poi.aldeia) + '</p>';
+                        poi_list_item += '<p>Address: ' + (poi.address == null ? "<span class='danger'>No address</span>" : poi.address) + '</p>';
+                        poi_list_item += '<p>Phone: ' + (poi.phone == null ? "<span class='danger'>No phone</span>" : poi.phone) + '</p>';
+                        poi_list_item += '<p>Website: ' + (poi.website == null ? "<span class='danger'></span>" : poi.website) + '</p>';
+
+
+                        poi_list_item += '</li>';
+
+                        html += poi_list_item;
+                    }
+                    html += '</ul>';
+                    // console.log(html);
+                    // $("#feature-info").html(html);
+                    // $("#featureModal").modal();
+                    // $("#featureModal").modal('open');
+                    $(".slide-show-details").html(html);
+                    $(".slide-show-details").sidenav('open');
+                } else {
+                    M.toast({html: "No Point of interests", classes: 'rounded project-toast'});
+                }
+            } else {
+                M.toast({html: "No Point of interests", classes: 'rounded project-toast'});
+
+            }
+
+
+        }
+    })
+} //getProjects
+
+
+function showPostoInformation(area_id) {
+    $.ajax({
+        url: api_url + lang + "/post-admin/" + area_id + "/sucos",
+        type: "get",
+        success: function (res) {
+            // console.log(res);
+            clearAreaProfileModal();
+            $("#area-details-container .area-name").html(res.area_name);
+            var html = '';
+
+            if (res.sucos.length > 0) {
+
+                $.each(res.sucos, function (index, value) {
+                    html += "<tr><td>" + value.area_name + "</td></tr>";
+                });
+            }
+
+            $(".card-area-profile-info").removeClass('hide');
+            $(".card-area-profile-info").addClass('show');
+            if (res.profile.length > 0) {
+
+                $("#area-details-container .post-president").html(res.profile[0].president);
+                $("#area-details-container .post-secretary").html(res.profile[0].accountant);
+                $("#area-details-container .post-accountant").html(res.profile[0].accountant);
+                $("#area-details-container .post-address").html(res.profile[0].address);
+                $("#area-details-container .post-phone").html(res.profile[0].phone);
+                $("#area-details-container .post-email").html(res.profile[0].email);
+                $("#area-details-container .post-profile_information").html(res.profile[0].profile_information);
+                if (res.profile[0].banner_img != null || res.profile[0].banner_img != undefined) {
+                    $("#area-details-container .post-banner").attr("src", res.profile[0].banner_img);
+                }
+
+
+                $("#area-details-container .area-border").removeClass('hide');
+                $("#area-details-container .area-border").addClass('show');
+
+            } else {
+                $(".card-area-profile-info").addClass('hide');
+                $(".card-area-profile-info").removeClass('show');
+            }
+            // $("#myModalPostAdmin .modal-title").html(res.area_name);
+            $("#area-details-container .modal-table-sucos").html(html);
+            let container = $("#area-details-container");
+            $(".slide-show-details").html(container);
+            $(".slide-show-details").sidenav('open');
+        }
+    })
+} //showPostoInformation
+
+
+function showSucoInformation(area_id) {
+    $.ajax({
+        url: api_url + lang + "/suco/" + area_id + '/profile',
+        type: "get",
+        success: function (res) {
+            // console.log(res);
+            clearAreaProfileModal();
+            $("#area-details-container .area-name").html(res.suco);
+            var html = '';
+
+            if (res.profile != null) {
+                $("#area-details-container .post-president-title").html("");
+                $("#area-details-container .post-president").html(res.profile.president);
+                $("#area-details-container .post-secretary").html(res.profile.accountant);
+                $("#area-details-container .post-accountant").html(res.profile.accountant);
+                $("#area-details-container .post-address").html(res.profile.address);
+                $("#area-details-container .post-phone").html(res.profile.phone);
+                $("#area-details-container .post-email").html(res.profile.email);
+                $("#area-details-container .post-profile_information").html(res.profile.profile_information);
+                if (res.profile.banner_img != null || res.profile.banner_img != undefined) {
+                    $("#area-details-container .post-banner").attr("src", res.profile.banner_img);
+                }
+
+                let container = $("#area-details-container");
+                $(".card-area-profile-info").addClass('show');
+                $(".card-area-profile-info").removeClass('hide');
+                $("#area-details-container .area-border").addClass('hide');
+                $(".slide-show-details").html(container);
+                $(".slide-show-details").sidenav('open');
+
+            } else {
+                M.toast({html: '<h3>' + res.suco + '</h3>', classes: 'rounded'})
+            }
+
+
+        }
+    })
+} //showSucoInformation
+
+function showModalInfo(ev) {
+    let projectId = ev.target.projectId;
+    let latLng = ev.target._latlng;
+    $.ajax({
+        url: api_url + lang + "/project/" + projectId,
+        type: "get",
+        success: function (res) {
+
+            $("#feature-info").html(res);
+            $("#featureModal").modal();
+            $("#featureModal").modal('open');
+        }
+    });
+
+} //showModalInfo
+
+$("body").on("click", ".btn-view-project", function () {
+    let id = $(this).data("id");
+    let latitude = $(this).data('latitude');
+    let longitude = $(this).data('longitude');
+
+
+    if ((latitude !== null || latitude !== undefined) && (longitude !== null || longitude !== undefined)) {
+
+        if (foundPlaceMarker) {
+            map.removeLayer(foundPlaceMarker);
+        }
+
+        foundPlaceMarker = L.circle([latitude, longitude], {
+            iconUrl: '/css/map/images/marker-green.png',
+            iconSize: [20, 20]
+        });
+
+        foundPlaceMarker.setStyle({className: 'selected-marker'});
+        foundPlaceMarker.addTo(map);
+        foundPlaceMarker.projectId = id;
+        foundPlaceMarker.on("click", showModalInfo);
+
+        map.flyTo([latitude, longitude], 17);
+        $("#featureModal").modal('close');
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Coordenates error',
+        })
+    }
+
+});
+
+map.on("click", function (e) {
+    console.log(e);
+})
+/* Layer control listeners that allow for a single markerClusters layer */
+map.on("overlayadd", function (e) {
+
+    if (e.layer === pointOfInterestLayer) {
+        markerClusters.addLayer(pointOfInterestLayerItem);
+        $(".info-panel").show();
+        $(".info-list").hide();
+        $(".info-list").html(poi_list);
+
+        if (totalPOI > 1) {
+            map.flyToBounds(pointOfInterestLayerItem.getBounds());
+        }
+
+
+    }
+
+    if (e.layer === projectLayer) {
+        markerClusters.addLayer(projectLayerItem);
+        var toastHTML = 'Total Project: ' + totalProject;
+        M.toast({html: toastHTML, classes: 'rounded project-toast'});
+        $(".info-panel").show();
+        $(".info-list").hide();
+        $(".info-list").html(project_list);
+        if (totalProject > 1) {
+            map.flyToBounds(projectLayerItem.getBounds());
+        }
+
+
+    }
+
+    if (e.layer === healthFacilityLayer) {
+        markerClusters.addLayer(healthFacilityLayerItem);
+        map.flyToBounds(healthFacilityLayerItem.getBounds());
+    }
+
+    if (e.layer === populatedPlaceLayer) {
+        markerClusters.addLayer(populatedPlaceLayerItem);
+        map.flyToBounds(populatedPlaceLayerItem.getBounds());
+    }
+
+    if (e.name === "Municipality") {
+        $(".info-panel").show();
+        $(".info-list").hide();
+        $(".info-list").html(area_municipality_list);
+        this.removeControl(populationDensityLegendControl);
+        populationDensityLegendControl.addTo(this);
+        M.toast({
+            html: "Total area: " + totalAreaOfTimorLeste.toFixed(2) + ' km<sup>2</sup>',
+            className: 'rounded'
+        });
+
+        // $(".total_population_legend").html("Total Population <br>(" + numberWithPoint($("#total_population").val()) + ")");
+        $(".total_population_legend").html("Total Population <br>(" + numberWithPoint(total_population) + ")");
+    }
+
+    if (e.name === "Administrative Post" || e.name == 'Posto administrativos' || e.name == 'Postu administrativu') {
+        $(".info-panel").show();
+        $(".info-list").hide();
+        $(".info-list").html(area_post_administrative_list);
+        this.removeControl(populationDensityLegendControl);
+        populationDensityLegendControl.addTo(this);
+        M.toast({
+            html: "Total area: " + totalAreaOfTimorLeste.toFixed(2) + ' km<sup>2</sup>',
+            className: 'rounded'
+        });
+
+        // $(".total_population_legend").html("Total Population <br>(" + numberWithPoint($("#total_population").val()) + ")");
+        $(".total_population_legend").html("Total Population <br>(" + numberWithPoint(total_population) + ")");
+    }
+
+    if (e.name === "Suco" || e.name == 'Suku') {
+        $(".info-panel").show();
+        $(".info-list").hide();
+        $(".info-list").html(area_suco_list);
+        M.toast({
+            html: "Total area: " + totalAreaOfTimorLeste.toFixed(2) + ' km<sup>2</sup>',
+            className: 'rounded'
+        })
+    }
+
+
+});
+
+
+map.on("overlayremove", function (e) {
+
+
+    if (e.layer === pointOfInterestLayer) {
+        markerClusters.removeLayer(pointOfInterestLayerItem);
+        // $(".info-panel").hide();
+        // $(".info-list").html('');
+    }
+    if (e.layer === projectLayer) {
+        markerClusters.removeLayer(projectLayerItem);
+        // $(".info-panel").hide();
+        // $(".info-list").html('');
+    }
+
+
+    if (e.layer === healthFacilityLayer) {
+        markerClusters.removeLayer(healthFacilityLayerItem);
+    }
+    if (e.layer === populatedPlaceLayer) {
+        markerClusters.removeLayer(populatedPlaceLayerItem);
+    }
+
+    if ((e.name === "Municipality") | (e.name === "Administrative Post") | (e.name === "Suco")) {
+
+        this.removeControl(populationDensityLegendControl);
+
+    }
+
+    $(".info-panel").hide();
+    $(".info-list").html('');
+});
+
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function getPopulationDensityColor(d) {
+    return d > 100000 ? '#f6d1c1' :
+        d > 75000 ? '#fc9b7d' :
+            d > 70000 ? '#fb7453' :
+                d > 65000 ? '#f24634' :
+                    d > 60000 ? '#d11f26' :
+                        d > 55000 ? '#ae151b' :
+                            d > 50000 ? '#710013' :
+                                '#fdb210'//'#012128';
+}
+
+//
+// function getPopulationDensityColor(d) {
+//     return d > 100000 ? '#07f20f' :
+//         d > 75000 ? '#88d300' :
+//             d > 70000 ? '#acbc00' :
+//                 d > 65000 ? '#c1a700' :
+//                     d > 60000 ? '#cf9700' :
+//                         d > 55000 ? '#dc8200' :
+//                             d > 50000 ? '#e86b00' :
+//                                 '#f54300';
+// }
+
+function clearAreaProfileModal() {
+    $("#myModalPostAdmin .post-president").html('');
+    $("#myModalPostAdmin .post-secretary").html('');
+    $("#myModalPostAdmin .post-accountant").html('');
+    $("#myModalPostAdmin .post-address").html('');
+    $("#myModalPostAdmin .post-phone").html('');
+    $("#myModalPostAdmin .post-email").html('');
+    $("#myModalPostAdmin .post-profile_information").html('');
+    $(".card-area-profile-info").addClass('hide');
+    $("#myModalPostAdmin .modal-table-sucos").html('');
+}
+
+function numberWithPoint(n) {
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+
+function showPreLoader() {
+    $(".please-wait").css('display', 'block');
+    $(".load-wrapper").css('opacity', 1);
+}
+
+function hidePreLoader() {
+    $(".please-wait").css('display', 'none');
+    $(".load-wrapper").css('opacity', 0);
+}
+
+hidePreLoader();

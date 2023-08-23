@@ -1,0 +1,84 @@
+.event-container{
+    height: 450px;
+    background: #c30734 !important;
+
+    border-radius: 5px;
+    /*border: 1px #ebebeb dashed;*/
+}
+#calendar-event-container{
+    background: #c30734 !important;
+    height: 450px;
+
+    border-radius: 5px;
+}
+.event .panel-body {
+    background: #cdcdcd;
+    padding:0;
+    margin:0;
+    margin-bottom: 4px;
+}
+.event .panel-body > div {
+    padding: 0 10px;
+}
+.event .panel-body .event-date {
+    border-left: none;
+    padding: 0;
+    text-align: center;
+    position: relative;
+    background: #bebbbb;
+    color: white;
+}
+
+.event .event-date > div {
+    font-size: 12px;
+    position: absolute;
+    bottom: 0;
+    background: #42A5F5;
+    width: 100%;
+}
+.fc .fc-toolbar-title,.fc .fc-daygrid-day-number, .fc .fc-daygrid-more-link{
+    color: #fff !important;
+    font-weight: 600;
+}
+
+
+/*.event .event-date i {*/
+/*    font-size: 2em;*/
+/*    display: block;*/
+/*    position:relative;*/
+/*}*/
+/*.event .event-date i.day {*/
+/*    font-size: 16px;*/
+/*}*/
+/*.event .event-date i.month {*/
+/*    font-size:18px;*/
+/*}*/
+/*.event .event-date i.year {*/
+/*    font-size:20px;*/
+/*}*/
+
+
+.event .info{
+    font-size: 16px;
+    color: #fff;
+}
+
+.event .info a.btn-view-event{
+    color: #fff!important;
+}
+.event .info a.btn-view-event:hover{
+    color: #960707!important;
+}
+
+.event .info > div, .event .info > ul{
+    font-size: 12px;
+}
+
+
+#table-events th{
+    font-weight: 600;
+}
+
+#table-events td{
+    font-size: 16px;
+}

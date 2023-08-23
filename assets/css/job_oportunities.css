@@ -1,0 +1,102 @@
+.search-job {
+    margin: 0;
+    padding: 10px 35px;
+    background-color: #fff;
+    border: none;
+    border-radius: 0px;
+}
+
+
+.job-counter-list-item-center {
+    text-align: center;
+    margin: 0 auto;
+}
+
+
+.job-counter-list-item {
+    margin: 0 10px;
+    position: relative;
+    box-sizing: border-box;
+    padding: 0;
+    color: #ffffff;
+    display: inline-block;
+    text-align: center;
+}
+
+
+.job-counter-list-item .counter {
+    background: rgba(255, 255, 255, 0.2);
+    width: 100px;
+    height: 100px;
+    line-height: 95px;
+    /*border: solid 2px #ff0000;*/
+    display: inline-block;
+    font-size: 40px;
+    font-weight: 400;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
+
+    -webkit-box-shadow: 0 8px 17px 2px rgb(0 0 0 /14%), 0 3px 14px 2px rgb(0 0 0 / 12%), 0 5px 5px -3px rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 17px 2px rgb(0 0 0 /14%), 0 3px 14px 2px rgb(0 0 0 / 12%), 0 5px 5px -3px rgb(0 0 0 / 20%);
+
+}
+
+.job-counter-list-item h5 {
+    color: #ffffff;
+    margin: 20px 0 0 0;
+    font-size: 15px;
+    font-weight: 400;
+}
+#jobs-and-opportunties table {
+    margin: 0;
+    background-color: transparent;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+}
+
+#jobs-and-opportunties table caption {
+    font-weight: bold;
+    padding: 0.5em;
+    margin: 0.5em auto;
+}
+
+#jobs-and-opportunties table td, table th {
+    padding: 1.2em;
+}
+
+#jobs-and-opportunties table thead th, table tfoot th {
+    font-weight: bold;
+}
+
+#jobs-and-opportunties table tfoot th {
+    border-top: 0.1em inset #000;
+}
+
+#jobs-and-opportunties table thead th {
+    border-bottom: 0.1em inset #000;
+}
+
+#jobs-and-opportunties tr.even, tr.odd {
+    background-color: transparent;
+}
+
+#jobs-and-opportunties tbody {
+    border: none;
+}
+
+#jobs-and-opportunties .views-field .item-list ul li {
+    list-style-type: none;
+    list-style-image: none;
+}
+
+#jobs-and-opportunties .views-field-field-file-attachments .file-icon {
+    position: relative;
+    top: 3px;
+}
+
+#jobs-and-opportunties .item-list ul li {
+    margin: 0 0 0.5em 1.5em;
+    padding: 0;
+}
