@@ -7,6 +7,7 @@ function theme_options_panel()
 {
 
     add_menu_page('Portal', 'Portal', 'manage_options', 'portalmunicipal-theme-options', 'setting_options_page');
+     add_submenu_page('portalmunicipal-theme-options', 'Population Recap', 'Population Recap', 'manage_options', 'population-recapitulacao', 'population_recap_setting_page');
     // add_submenu_page('portalmunicipal-theme-options', 'Coursera Users', 'Coursera Users', 'manage_options', 'coursera-user', 'coursera_user_setting_page');
 
 }
@@ -70,6 +71,7 @@ function render_textarea($id, $name, $content)
 
 //
 include_once 'setting_fragment_general.php';
+include_once 'setting_fragment_population_recap.php';
 
 //$current_page = get_current_screen()->base;
 //
@@ -83,6 +85,7 @@ function enqueue_script_admin($hook)
 //    wp_enqueue_script('admin_jquery_bootstrap', get_template_directory_uri() . '/assets/js/jquery.min.js', array('jquery'), '', true);
 
     wp_enqueue_script('adming_upload_image', get_template_directory_uri() . '/assets/js/admin_setting.js', array('jquery'), '', true);
+    
     if (!did_action('wp_enqueue_media')) {
         wp_enqueue_media();
     }

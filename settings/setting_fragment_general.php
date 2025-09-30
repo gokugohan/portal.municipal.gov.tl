@@ -5,7 +5,8 @@ function setting_options_page()
     ?>
     <link rel="stylesheet"
           href="<?= get_template_directory_uri() . '/assets/vendor/bootstrap/css/bootstrap.min.css' ?>">
-
+    <link rel="stylesheet"
+          href="<?= get_template_directory_uri() . '/assets/css/dataTables.dataTables.min.css' ?>">
     <link rel="stylesheet" href="<?= get_template_directory_uri() . '/assets/js/jquery.min.js' ?>">
     <link rel="stylesheet" href="<?= get_template_directory_uri() . '/assets/vendor/bootstrap/js/bootstrap.min.js' ?>">
     <link rel="stylesheet" href="<?= get_template_directory_uri() . '/assets/js/cousera.js' ?>">
@@ -47,21 +48,132 @@ function setting_options_page()
 
 function add_setting_fields_general_info()
 {
-    add_settings_field_to_section('setting_base_url', "Portal Base URL", 'setting_base_url', 'general_theme_setting', 'setting_general_section');
-    add_settings_field_to_section('setting_api_url', "API Url", 'setting_api_url', 'general_theme_setting', 'setting_general_section');
-    add_settings_field_to_section('setting_enable_faq', "Enable FAQ", 'setting_enable_faq', 'general_theme_setting', 'setting_general_section');
-    add_settings_field_to_section('setting_enable_training_platform', "Enable Training Platform", 'setting_enable_training_platform', 'general_theme_setting', 'setting_general_section');
-    add_settings_field_to_section('setting_api_coursera_access_code', "Coursera One-Time Access Code", 'setting_api_coursera_access_code', 'general_theme_setting', 'setting_general_section');
-    add_settings_field_to_section('setting_api_coursera_program_id', "Coursera Program Id", 'setting_api_coursera_program_id', 'general_theme_setting', 'setting_general_section');
+    add_settings_field_to_section('municipality_cta', "Portal", 'municipality_cta', 'general_theme_setting', 'setting_general_section');
+    add_settings_field_to_section('municipality_setting_default_tls_map', "Default Timor-Leste Map", 'municipality_setting_default_tls_map', 'general_theme_setting', 'setting_general_section');
+    // add_settings_field_to_section('setting_base_url', "Portal Base URL", 'setting_base_url', 'general_theme_setting', 'setting_general_section');
+    // add_settings_field_to_section('setting_api_url', "API Url", 'setting_api_url', 'general_theme_setting', 'setting_general_section');
+    // add_settings_field_to_section('setting_enable_faq', "Enable FAQ", 'setting_enable_faq', 'general_theme_setting', 'setting_general_section');
+//    add_settings_field_to_section('setting_enable_training_platform', "Enable Training Platform", 'setting_enable_training_platform', 'general_theme_setting', 'setting_general_section');
+//    add_settings_field_to_section('setting_api_coursera_access_code', "Coursera One-Time Access Code", 'setting_api_coursera_access_code', 'general_theme_setting', 'setting_general_section');
+//    add_settings_field_to_section('setting_api_coursera_program_id', "Coursera Program Id", 'setting_api_coursera_program_id', 'general_theme_setting', 'setting_general_section');
 //    add_settings_field_to_section('setting_api_coursera_api_token', "Coursera API Token", 'setting_api_coursera_api_token', 'general_theme_setting', 'setting_general_section');
-    add_settings_field_to_section('setting_api_coursera_refresh_token', "Coursera Refresh Token", 'setting_api_coursera_refresh_token', 'general_theme_setting', 'setting_general_section');
-    add_settings_field_to_section('setting_api_coursera_client_id', "Coursera Client Id", 'setting_api_coursera_client_id', 'general_theme_setting', 'setting_general_section');
-    add_settings_field_to_section('setting_api_coursera_client_secret', "Coursera Client Secret", 'setting_api_coursera_client_secret', 'general_theme_setting', 'setting_general_section');
+//    add_settings_field_to_section('setting_api_coursera_refresh_token', "Coursera Refresh Token", 'setting_api_coursera_refresh_token', 'general_theme_setting', 'setting_general_section');
+//    add_settings_field_to_section('setting_api_coursera_client_id', "Coursera Client Id", 'setting_api_coursera_client_id', 'general_theme_setting', 'setting_general_section');
+//    add_settings_field_to_section('setting_api_coursera_client_secret', "Coursera Client Secret", 'setting_api_coursera_client_secret', 'general_theme_setting', 'setting_general_section');
 
     //    add_settings_field_to_section('setting_enable_library', "Check to enable Library(Reports)", 'setting_enable_library', 'general_theme_setting', 'setting_general_section');
 
 //    add_settings_field_to_section('setting_homepage_image', "Homepage Background Image", 'setting_homepage_image', 'general_theme_setting', 'setting_general_section');
+
+
 }
+
+function municipality_cta(){
+    $options = get_option('setting_settings_general');
+    ?>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group mb-3">
+                <label for="total_population">Total Population</label>
+                <input type='text'
+                       name='setting_settings_general[total_population]'
+                       class="regular-text form-control"
+                       id="total_population"
+                       value='<?= $options['total_population'] ?? "" ?>'/>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group mb-3">
+                <label for="total_male">Total Male</label>
+                <input type='text'
+                       name='setting_settings_general[total_male]'
+                       class="regular-text form-control"
+                       id="total_male"
+                       value='<?= $options['total_male'] ?? "" ?>'/>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group mb-3">
+                <label for="total_female">Total Female</label>
+                <input type='text'
+                       name='setting_settings_general[total_female]'
+                       class="regular-text form-control"
+                       id="total_female"
+                       value='<?= $options['total_female'] ?? "" ?>'/>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group mb-3">
+                <label for="total_suku">Total Administrative Post</label>
+                <input type='text'
+                       name='setting_settings_general[total_administrative_post]'
+                       class="regular-text form-control"
+                       id="total_suku"
+                       value='<?= $options['total_administrative_post'] ?? "" ?>'/>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group mb-3">
+                <label for="total_suku">Total Suku</label>
+                <input type='text'
+                       name='setting_settings_general[total_suku]'
+                       class="regular-text form-control"
+                       id="total_suku"
+                       value='<?= $options['total_suku'] ?? "" ?>'/>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group mb-3">
+                <label for="total_village">Total Village</label>
+                <input type='text'
+                       name='setting_settings_general[total_village]'
+                       class="regular-text form-control"
+                       id="total_village"
+                       value='<?= $options['total_village'] ?? "" ?>'/>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group mb-3">
+                <label for="total_household">Total Household</label>
+                <input type='text'
+                       name='setting_settings_general[total_household]'
+                       class="regular-text form-control"
+                       id="total_household"
+                       value='<?= $options['total_household'] ?? "" ?>'/>
+            </div>
+        </div>
+    </div>
+
+    <?php
+}
+
+
+
+function municipality_setting_default_tls_map()
+{
+
+    $options = get_option('setting_settings_general');
+    $file_url = $options['municipality_setting_upload_file'] ?? "";;
+    ?>
+    <div class="form-group">
+        <!--        <strong>Default Timor-Leste Map</strong><br>-->
+        <input type='text' id="input-default-timor-leste-map"
+               name='setting_settings_general[municipality_setting_upload_file]'
+               class="regular-text form-control"
+               placeholder="Default Timor-Leste Map"
+               value='<?php echo $file_url ?>'/>
+        <?php if ($file_url) {
+            ?>
+            <p>Current File: <a href="<?php echo esc_url($file_url); ?>" target="_blank">View</a></p>
+            <?php
+        } ?>
+
+    </div>
+
+    <?php
+}
+
 
 function setting_homepage_image()
 {
@@ -144,7 +256,7 @@ function setting_enable_training_platform()
     <input type='checkbox' name='setting_settings_general[setting_enable_training_platform]'
            class="regular-text form-control"
            style="float:left"
-           value="1" <?php checked(1, $options['setting_enable_training_platform'], true); ?>/>
+           value="1" <?php checked(1, $options['setting_enable_training_platform']??false, true); ?>/>
 
     <?php
 }

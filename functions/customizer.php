@@ -1,16 +1,21 @@
 <?php
 
-class Heading_Custom_control extends WP_Customize_Control
-{
-    public $type = 'info';
+add_action('customize_register', function ($wp_customize) {
+    if (class_exists('WP_Customize_Control')) {
 
-    public function render_content()
-    {
-        ?>
-        <h1 style="border-bottom: 1px solid #cdcdcd;"><?php echo esc_html($this->label); ?></h1>
-        <?php
+        class Heading_Custom_control extends WP_Customize_Control
+        {
+            public $type = 'info';
+
+            public function render_content()
+            {
+?>
+                <h1 style="border-bottom: 1px solid #cdcdcd;"><?php echo esc_html($this->label); ?></h1>
+<?php
+            }
+        }
     }
-}
+});
 
 
 if (!function_exists('municipality_panel_wp_customize_register')) {
@@ -21,7 +26,8 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
     {
         // Panel: Basic.
         // Theme Options Panel
-        $wp_customize->add_panel('municipality_theme_panel',
+        $wp_customize->add_panel(
+            'municipality_theme_panel',
             array(
                 'priority' => 1,
                 'title' => 'Portal Settings',
@@ -31,7 +37,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
         );
 
 
-//municipality_login_background_image
+        //municipality_login_background_image
         section_header($wp_customize, 'municipality_theme_panel', 'municipality_header_section', 3);
         section_login($wp_customize, 'municipality_theme_panel', 'login_section', 4);
 
@@ -41,8 +47,6 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
 
         section_footer($wp_customize, 'municipality_theme_panel', 'municipality_footer_section', 5);
         section_address($wp_customize, 'municipality_theme_panel', 'municipality_address_section', 6);
-
-
     }
 
 
@@ -65,7 +69,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'description' => 'Top Header Menu Logo. Upload one here! Site logo should be rectangular and at least 320 × 112 pixels',
             'section' => $section,
             'settings' => 'municipality_header_logo',
-            'button_labels' => array(// All These labels are optional
+            'button_labels' => array( // All These labels are optional
                 'select' => 'Select Logo',
                 'remove' => 'Remove Logo',
                 'change' => 'Change Logo',
@@ -83,7 +87,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'description' => 'Hero Background Image. Upload one Here! Image should be at least 1024 x 250 pixels',
             'section' => $section,
             'settings' => 'municipality_hero_image',
-            'button_labels' => array(// All These labels are optional
+            'button_labels' => array( // All These labels are optional
                 'select' => 'Select Image',
                 'remove' => 'Remove Image',
                 'change' => 'Change Image',
@@ -135,7 +139,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
         ));
 
         $wp_customize->add_setting('municipality_login_background_image', array(
-//            'default' => get_theme_file_uri('img/corosal1.jpg'), // Add Default Image URL
+            //            'default' => get_theme_file_uri('img/corosal1.jpg'), // Add Default Image URL
             'sanitize_callback' => 'esc_url_raw',
             'transport' => 'refresh', // Options: refresh or postMessage.
             'capability' => 'edit_theme_options',
@@ -146,7 +150,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'description' => 'Hero Background Image. Upload one Here! Image should be at least 1024 x 250 pixels',
             'section' => $section,
             'settings' => 'municipality_login_background_image',
-            'button_labels' => array(// All These labels are optional
+            'button_labels' => array( // All These labels are optional
                 'select' => 'Select Image',
                 'remove' => 'Remove Image',
                 'change' => 'Change Image',
@@ -173,7 +177,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
         ));
         $wp_customize->add_control(new Heading_Custom_control($wp_customize, 'hero_section', array(
             'label' => 'Hero Section',
-//            'description' 	=> 'Update top section of the frontpage',
+            //            'description' 	=> 'Update top section of the frontpage',
             'settings' => 'hero_section',
             'section' => $section,
         )));
@@ -186,10 +190,10 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
 
         $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'municipality_education_platform_logo', array(
             'label' => 'Logo',
-            'description'=>'Training platform Logo. Upload one here! Site logo should be rectangular and at least 320 × 112 pixels',
+            'description' => 'Training platform Logo. Upload one here! Site logo should be rectangular and at least 320 × 112 pixels',
             'section' => $section,
             'settings' => 'municipality_education_platform_logo',
-            'button_labels' => array(// All These labels are optional
+            'button_labels' => array( // All These labels are optional
                 'select' => 'Select Logo',
                 'remove' => 'Remove Logo',
                 'change' => 'Change Logo',
@@ -197,7 +201,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
         )));
 
         $wp_customize->add_setting('municipality_education_platform_hero_image', array(
-//            'default' => get_theme_file_uri('img/corosal1.jpg'), // Add Default Image URL
+            //            'default' => get_theme_file_uri('img/corosal1.jpg'), // Add Default Image URL
             'sanitize_callback' => 'esc_url_raw',
             'transport' => 'refresh', // Options: refresh or postMessage.
             'capability' => 'edit_theme_options',
@@ -208,7 +212,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'description' => 'Hero Background Image. Upload one Here! Image should be at least 1024 x 250 pixels',
             'section' => $section,
             'settings' => 'municipality_education_platform_hero_image',
-            'button_labels' => array(// All These labels are optional
+            'button_labels' => array( // All These labels are optional
                 'select' => 'Select Image',
                 'remove' => 'Remove Image',
                 'change' => 'Change Image',
@@ -261,7 +265,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'description' => 'About Image. Upload one Here!',
             'section' => $section,
             'settings' => 'municipality_education_platform_hero_bg_1',
-            'button_labels' => array(// All These labels are optional
+            'button_labels' => array( // All These labels are optional
                 'select' => 'Select Image',
                 'remove' => 'Remove Image',
                 'change' => 'Change Image',
@@ -297,7 +301,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'description' => 'About Image. Upload one Here!',
             'section' => $section,
             'settings' => 'municipality_education_platform_hero_bg_2',
-            'button_labels' => array(// All These labels are optional
+            'button_labels' => array( // All These labels are optional
                 'select' => 'Select Image',
                 'remove' => 'Remove Image',
                 'change' => 'Change Image',
@@ -306,7 +310,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
 
 
 
-    // Setting: Hero Description 3
+        // Setting: Hero Description 3
         $wp_customize->add_setting('municipality_education_platform_hero_description3', array(
             'type' => 'theme_mod',
             'transport' => 'refresh', // Options: refresh or postMessage.
@@ -334,7 +338,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'description' => 'About Image. Upload one Here!',
             'section' => $section,
             'settings' => 'municipality_education_platform_hero_bg_3',
-            'button_labels' => array(// All These labels are optional
+            'button_labels' => array( // All These labels are optional
                 'select' => 'Select Image',
                 'remove' => 'Remove Image',
                 'change' => 'Change Image',
@@ -342,7 +346,8 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
         )));
 
         // Setting: Intro video
-        $wp_customize->add_setting('municipality_education_platform_hero_video_url',
+        $wp_customize->add_setting(
+            'municipality_education_platform_hero_video_url',
             array(
                 'default' => '',
                 'transport' => 'refresh',
@@ -352,7 +357,9 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
         );
 
         // Control: Intro video
-        $wp_customize->add_control(new WP_Customize_Media_Control($wp_customize, 'municipality_education_platform_hero_video_url',
+        $wp_customize->add_control(new WP_Customize_Media_Control(
+            $wp_customize,
+            'municipality_education_platform_hero_video_url',
             array(
                 'label' => __('Training introduction video'),
                 'description' => esc_html__('Upload the summary video for the training platform'),
@@ -382,7 +389,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
         ));
         $wp_customize->add_control(new Heading_Custom_control($wp_customize, 'about_section', array(
             'label' => 'About Section',
-//            'description' 	=> 'Update top section of the frontpage',
+            //            'description' 	=> 'Update top section of the frontpage',
             'settings' => 'about_section',
             'section' => $section,
         )));
@@ -410,7 +417,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'transport' => 'refresh', // Options: refresh or postMessage.
             'capability' => 'edit_theme_options',
             'sanitize_callback' => 'esc_attr',
-//            'sanitize_callback' => 'sanitize_text'
+            //            'sanitize_callback' => 'sanitize_text'
         ));
 
         // Control: About Description
@@ -484,7 +491,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'description' => 'About Image. Upload one Here!',
             'section' => $section,
             'settings' => 'municipality_education_platform_about_image',
-            'button_labels' => array(// All These labels are optional
+            'button_labels' => array( // All These labels are optional
                 'select' => 'Select Image',
                 'remove' => 'Remove Image',
                 'change' => 'Change Image',
@@ -492,7 +499,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
         )));
 
 
-//        WHAT IS TRAINING
+        //        WHAT IS TRAINING
         $wp_customize->add_setting('what_is_training_section', array(
             'default' => '',
             'sanitize_callback' => 'mytheme_text_sanitization',
@@ -500,7 +507,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
         ));
         $wp_customize->add_control(new Heading_Custom_control($wp_customize, 'what_is_training_section', array(
             'label' => 'What is training section',
-//            'description' 	=> 'Update top section of the frontpage',
+            //            'description' 	=> 'Update top section of the frontpage',
             'settings' => 'what_is_training_section',
             'section' => $section,
         )));
@@ -529,7 +536,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'transport' => 'refresh', // Options: refresh or postMessage.
             'capability' => 'edit_theme_options',
             'sanitize_callback' => 'esc_attr',
-//            'sanitize_callback' => 'sanitize_text'
+            //            'sanitize_callback' => 'sanitize_text'
         ));
 
         // Control: What is training Description
@@ -565,7 +572,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'transport' => 'refresh', // Options: refresh or postMessage.
             'capability' => 'edit_theme_options',
             'sanitize_callback' => 'esc_attr',
-//            'sanitize_callback' => 'sanitize_text'
+            //            'sanitize_callback' => 'sanitize_text'
         ));
 
         // Control: What is training Description
@@ -601,7 +608,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'transport' => 'refresh', // Options: refresh or postMessage.
             'capability' => 'edit_theme_options',
             'sanitize_callback' => 'esc_attr',
-//            'sanitize_callback' => 'sanitize_text'
+            //            'sanitize_callback' => 'sanitize_text'
         ));
 
         // Control: What is training Description
@@ -637,7 +644,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'transport' => 'refresh', // Options: refresh or postMessage.
             'capability' => 'edit_theme_options',
             'sanitize_callback' => 'esc_attr',
-//            'sanitize_callback' => 'sanitize_text'
+            //            'sanitize_callback' => 'sanitize_text'
         ));
 
         // Control: What is training Description
@@ -652,11 +659,11 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
 
 
         // FOOTER LOGO
-//        $wp_customize->add_setting('municipality_footer_education_platform_image', array(
-//            'sanitize_callback' => 'esc_url_raw',
-//            'transport' => 'refresh', // Options: refresh or postMessage.
-//            'capability' => 'edit_theme_options',
-//        ));
+        //        $wp_customize->add_setting('municipality_footer_education_platform_image', array(
+        //            'sanitize_callback' => 'esc_url_raw',
+        //            'transport' => 'refresh', // Options: refresh or postMessage.
+        //            'capability' => 'edit_theme_options',
+        //        ));
 
         /*
         $wp_customize->add_control(new WP_Customize_Image_Control($wp_customize, 'municipality_footer_image', array(
@@ -674,7 +681,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
         ));
         $wp_customize->add_control(new Heading_Custom_control($wp_customize, 'sponsors', array(
             'label' => 'Sponsors',
-//            'description' 	=> 'Update top section of the frontpage',
+            //            'description' 	=> 'Update top section of the frontpage',
             'settings' => 'sponsors',
             'section' => $section,
         )));
@@ -836,8 +843,6 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'settings' => 'municipality_footer_education_platform_sponsor5_url',
             'type' => 'text'
         ));
-
-
     } // section_header_education_platform
 
 
@@ -864,7 +869,6 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'section' => $section,
             'settings' => 'municipality_balkaun_uniku_hero',
         )));
-
     } // section_balkaun_uniku
 
     function section_footer($wp_customize, $panel, $section, $priority)
@@ -922,7 +926,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'type' => 'text'
         ));
 
-//--------------------------------------------------------------------
+        //--------------------------------------------------------------------
 
         // Sponsor 2
         $wp_customize->add_setting('municipality_footer_sponsor2', array(
@@ -955,7 +959,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'type' => 'text'
         ));
 
-//--------------------------------------------------------------------
+        //--------------------------------------------------------------------
 
         // Sponsor 3
         $wp_customize->add_setting('municipality_footer_sponsor3', array(
@@ -988,7 +992,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'type' => 'text'
         ));
 
-//--------------------------------------------------------------------
+        //--------------------------------------------------------------------
         // Sponsor 4
         $wp_customize->add_setting('municipality_footer_sponsor4', array(
             'sanitize_callback' => 'esc_url_raw',
@@ -1020,7 +1024,7 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
             'type' => 'text'
         ));
 
-//--------------------------------------------------------------------
+        //--------------------------------------------------------------------
         // Sponsor 4
         $wp_customize->add_setting('municipality_footer_sponsor5', array(
             'sanitize_callback' => 'esc_url_raw',
@@ -1120,4 +1124,3 @@ if (!function_exists('municipality_panel_wp_customize_register')) {
     } // section_address
 
 }
-

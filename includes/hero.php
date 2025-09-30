@@ -56,7 +56,7 @@
                 <div class="icon-box hoverable wow fadeInLeft">
                     <img  class="img-filter"src="<?php echo get_stylesheet_directory_uri() . '/assets/img/front/data_catalog.png' ?>"
                          alt="">
-                    <h3><a href="<?= bloginfo('url') ?>/datasearch"><?= lang('data_catalog') ?></a></h3>
+                    <h3><a href="https://datasearch.municipio.gov.tl"><?= lang('data_catalog') ?></a></h3>
                 </div>
             </div>
 
@@ -65,13 +65,14 @@
                     <img src="<?php echo get_stylesheet_directory_uri() . '/assets/img/front/bu_logo_1.png' ?>"
                          alt="">
                     <h3>
-                        <a href="<?= bloginfo('url') ?>/balkaun-uniku"><?= lang('balkaun_uniku') ?></a>
+                        <a href="https://balkaununiku.gov.tl"><?= lang('balkaun_uniku') ?></a>
                     </h3>
                 </div>
             </div>
 
             <?php
-            if (get_option('setting_settings_general')['setting_enable_training_platform']) {
+            $is_training_platform_enabled = get_option('setting_settings_general')['setting_enable_training_platform']??false;
+            if ($is_training_platform_enabled) {
                 ?>
                 <div class="col-xl-2 col-lg-3 col-md-4">
                     <div class="icon-box hoverable wow fadeInLeft">

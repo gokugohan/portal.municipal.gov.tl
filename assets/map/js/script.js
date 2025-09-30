@@ -923,8 +923,8 @@ var projectLayerItem = L.geoJson(null, {
 // getAllProjects("");
 
 getMap(2, "Municipality", true);
-//getMap(4, "Suco");
-//getMap(3, "Administrative Post");
+getMap(4, "Suco");
+getMap(3, "Administrative Post");
 
 //
 // console.log('LAYERS');

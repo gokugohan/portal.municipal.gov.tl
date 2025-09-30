@@ -42,6 +42,10 @@ html {
     position: relative;
 }
 
+#hero h2{
+    font-size: 2rem;
+}
+
 #hero:before {
     content: "";
     background: rgba(0, 0, 0, 0.3);
@@ -54,13 +58,11 @@ html {
 
 
 #hero img.header_logo {
-    width: 75%;
+    /* width: 75%; */
 }
 
 @media (max-width: 767px) {
-    #hero {
-
-    }
+    
 
     #hero a.navbar-brand {
         margin-top: 3rem !important;
@@ -137,19 +139,23 @@ html {
 
 
 #hero p#dash2 {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
 }
 
 @media (min-width: 1024px) {
     #hero {
         background-attachment: fixed;
-        height: 100vh;
+        /* height: 100vh; */
     }
 
 }
 
 @media (min-width: 768px) {
-    #hero .hero-title {
+    #hero .hero-title{
+        padding-top: 100px;
+    }
+    #hero img.header_logo{
+        width: 150px;
     }
 
     #hero .profile-catalog > div {

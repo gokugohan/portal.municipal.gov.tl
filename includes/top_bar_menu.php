@@ -55,25 +55,6 @@
                 </li>
                 <?php
 
-                if (!is_page(['plataforma-de-treinamentu' ,'kona-ba-plataforma-treinamentu']) &&
-                    get_option('setting_settings_general')['setting_enable_faq']) {
-                    ?>
-
-                    <li class="nav-item faq-portal">
-                        <a class="nav-link text-white" title="<?= lang('faq_desc') ?>" href="#" data-toggle="modal"
-                           data-target="#modal-faq">
-                            <span class="hide-on-med-and-downa"><?= lang('faq') ?></span>
-                            <img src="<?php echo get_stylesheet_directory_uri() . '/assets/img/front/icons8-ask-question-50.png' ?>"
-                                 class="img-fluid about-icon-img">
-                        </a>
-                    </li>
-                    <?php
-                }
-                ?>
-
-
-                <?php
-
                 /**
                  * WPGlobus language switcher.
                  * Example 1: with using module `Publish` from WPGlobus Plus.
@@ -84,10 +65,6 @@
                            id="navbarDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <?php echo WPGlobus::Config()->language_name[WPGlobus::Config()->language];  ?>
-
-<!--                            <img class="img_size language_image dropdown-toggle mt-0" data-toggle="dropdown"-->
-<!--                                 style=""-->
-<!--                                 src="--><?php //echo WPGlobus::Config()->flags_url . WPGlobus::Config()->flag[WPGlobus::Config()->language] ?><!--">-->
                         </a>
 
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -117,17 +94,7 @@
                 add_logout_menu();
                 ?>
 
-
             </ul>
-            <?php
-            if (is_page(['plataforma-de-treinamentu' ,'kona-ba-plataforma-treinamentu']) || is_tax('coursera-courses-category')) {
-                ?>
-                <a class="btn-getstarted btn-join-now" id="btn-login-sso"
-                   href="https://www.coursera.org/programs/sso-integration-testing-7mi06?authProvider=timorleste"><?= lang('join now') ?></a>
-                <?php
-            }
-            ?>
-
         </div>
     </div>
 </nav>

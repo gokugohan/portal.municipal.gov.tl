@@ -47,7 +47,7 @@
     <link rel="stylesheet" type="text/css"
           href="<?php echo get_stylesheet_directory_uri() . '/assets/map/css/leaflet.groupedlayercontrol.css' ?>">
     <link rel="stylesheet" type="text/css"
-          href="<?php echo get_stylesheet_directory_uri() . '/assets/map/css/map.css' ?>">
+          href="<?php echo get_stylesheet_directory_uri() . '/assets/map/css/map.css.old' ?>">
 
     <link rel="stylesheet"
           href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.css">

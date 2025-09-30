@@ -88,9 +88,15 @@ ul.dropdown-menu li:hover a{
 }
 .navbar-dark .navbar-toggler-icon{
     filter: invert(1) brightness(1);
-    font-size: 2.5rem;
+    font-size: 1.5rem;
+    background-image: url(https://cdn0.iconfinder.com/data/icons/basic-ui-vol-1/32/UI_stroke-05-512.png);
 }
 
+@media (max-width:991px){
+    div#navbarSupportedContent{
+        background: #960807de !important;
+    }
+}
 @media only screen and
 (min-device-width: 768px) and
 (max-device-width: 1023px){

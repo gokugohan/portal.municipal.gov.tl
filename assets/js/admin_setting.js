@@ -1,5 +1,11 @@
 jQuery(document).ready(function () {
 
+    jQuery('body').on('click', '#input-default-timor-leste-map', function (e) {
+        e.preventDefault();
+        selectFile("#input-default-timor-leste-map");
+    });
+
+
     jQuery('body').on('click', '.default-bg-upload-button', function (e) {
         e.preventDefault();
         selectImage(".default-bg-img",'#setting_homepage_image');
@@ -96,5 +102,27 @@ jQuery(document).ready(function () {
             // button.html('<img League="' + attachment.url + '">').next().show().next().val(attachment.id);
         }).open();
     }
+
+
+
+    function selectFile(inputTextHtml) {
+        let custom_uploader = wp.media({
+            title: 'Select JSON or GeoJSON File',
+            library: {
+                // uploadedTo : wp.media.view.settings.post.id, // attach to the current post?
+                // type: 'application/json'
+                type: ''
+            },
+            button: {
+                text: 'Use this file' // button label text
+            },
+            multiple: false
+        }).on('select', function () { // it also has "open" and "close" events
+            let attachment = custom_uploader.state().get('selection').first().toJSON();
+            jQuery(inputTextHtml).val(attachment.url);
+            // button.html('<img League="' + attachment.url + '">').next().show().next().val(attachment.id);
+        }).open();
+    }
+
 
 });
