@@ -1,11 +1,15 @@
 <?php include 'includes/modal_about_window.php' ?>
-<?php //include 'includes/modal_faq_window.php' ?>
+<?php //include 'includes/modal_faq_window.php' 
+?>
 
-<?php //include 'modal_municipality_profile_window.php'?>
+<?php //include 'modal_municipality_profile_window.php'
+?>
 
-<?php //include 'includes/modal_datacatalog_window.php' ?>
+<?php //include 'includes/modal_datacatalog_window.php' 
+?>
 
-<?php //include 'includes/modal_library_window.php' ?>
+<?php //include 'includes/modal_library_window.php' 
+?>
 
 
 <div id="scrollUp" style="bottom: 45px; right: 24px;">
@@ -13,23 +17,23 @@
         <i class="fa fa-chevron-up"></i>
     </a>
 </div><?php
-$footer_img = get_theme_mod('municipality_footer_image');
+        $footer_img = get_theme_mod('municipality_footer_image');
 
-$sponsor1_img = get_theme_mod('municipality_footer_sponsor1');
-$sponsor2_img = get_theme_mod('municipality_footer_sponsor2');
-$sponsor3_img = get_theme_mod('municipality_footer_sponsor3');
-$sponsor4_img = get_theme_mod('municipality_footer_sponsor4');
-$sponsor5_img = get_theme_mod('municipality_footer_sponsor5');
-
-
-$sponsor1_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor1_url', '#!'));
-$sponsor2_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor2_url', '#!'));
-$sponsor3_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor3_url', '#!'));
-$sponsor4_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor4_url', '#!'));
-$sponsor5_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor5_url', '#!'));
+        $sponsor1_img = get_theme_mod('municipality_footer_sponsor1');
+        $sponsor2_img = get_theme_mod('municipality_footer_sponsor2');
+        $sponsor3_img = get_theme_mod('municipality_footer_sponsor3');
+        $sponsor4_img = get_theme_mod('municipality_footer_sponsor4');
+        $sponsor5_img = get_theme_mod('municipality_footer_sponsor5');
 
 
-?>
+        $sponsor1_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor1_url', '#!'));
+        $sponsor2_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor2_url', '#!'));
+        $sponsor3_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor3_url', '#!'));
+        $sponsor4_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor4_url', '#!'));
+        $sponsor5_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor5_url', '#!'));
+
+
+        ?>
 
 
 <input type="hidden" id="admin-ajax-url" value="<?= admin_url('admin-ajax.php'); ?>">
@@ -57,7 +61,7 @@ $sponsor5_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor5
 
             <div class="col-lg-2 col-md-12 footer-links">
                 <h4><?= lang('Quick Link') ?></h4>
-                <?php get_menu_quick_links();?>
+                <?php get_menu_quick_links(); ?>
 
             </div>
 
@@ -67,44 +71,44 @@ $sponsor5_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor5
                     <a href="<?= $sponsor1_url ?>">
                         <?php
                         if ($sponsor1_img) {
-                            ?>
+                        ?>
                             <img class="sponsors-logo" alt="" src="<?= $sponsor1_img ?>">
-                            <?php
+                        <?php
                         }
                         ?>
                     </a>
                     <a href="<?= $sponsor2_url ?>">
                         <?php
                         if ($sponsor2_img) {
-                            ?>
+                        ?>
                             <img class="sponsors-logo" alt="" src="<?= $sponsor2_img ?>">
-                            <?php
+                        <?php
                         }
                         ?>
                     </a>
                     <a href="<?= $sponsor3_url ?>">
                         <?php if ($sponsor3_img) {
-                            ?>
+                        ?>
                             <img class="sponsors-logo" alt="" src="<?= $sponsor3_img ?>">
-                            <?php
+                        <?php
                         }
                         ?>
                     </a>
                     <a href="<?= $sponsor4_url ?>">
                         <?php
                         if ($sponsor4_img) {
-                            ?>
+                        ?>
                             <img class="sponsors-logo" alt="" src="<?= $sponsor4_img ?>">
-                            <?php
+                        <?php
                         }
                         ?>
                     </a>
                     <a href="<?= $sponsor5_url ?>">
                         <?php
                         if ($sponsor5_img) {
-                            ?>
+                        ?>
                             <img class="sponsors-logo" alt="" src="<?= $sponsor5_img ?>">
-                            <?php
+                        <?php
                         }
                         ?>
                     </a>
@@ -116,7 +120,10 @@ $sponsor5_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor5
 
     <div class="container mt-4">
         <div class="copyright">
-            &copy; <?= date('Y') ?><?= filter_text_wpglobus(get_theme_mod('municipality_address_entity_name', 'Ministério da Administração Estatal')) ?>
+            <?php
+            $theme = wp_get_theme();
+            ?>
+            <?= filter_text_wpglobus(get_theme_mod('municipality_address_entity_name', 'Ministério da Administração Estatal')) ?> | &copy; <?= date('Y') ?> | <?= $theme->get('Name') . ' ' . $theme->get('Version') ?>
         </div>
     </div>
 
@@ -134,8 +141,10 @@ $sponsor5_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor5
 <script src="<?php echo get_stylesheet_directory_uri() . '/assets/js/jquery.dataTables.min.js' ?>"></script>
 <script src="<?php echo get_stylesheet_directory_uri() . '/assets/js/dataTables.bootstrap4.min.js' ?>"></script>
 <script src="<?php echo get_stylesheet_directory_uri() . '/assets/js/purecounter_vanilla.js' ?>"></script>
-<!--<script src="--><?php //echo get_stylesheet_directory_uri() . '/assets/js/highcharts/highcharts.js' ?><!--"></script>-->
-<!--<script src="--><?php //echo get_stylesheet_directory_uri() . '/assets/js/populations.js' ?><!--"></script>-->
+<!--<script src="--><?php //echo get_stylesheet_directory_uri() . '/assets/js/highcharts/highcharts.js' 
+                    ?><!--"></script>-->
+<!--<script src="--><?php //echo get_stylesheet_directory_uri() . '/assets/js/populations.js' 
+                    ?><!--"></script>-->
 
 <script>
     new WOW().init();
@@ -161,13 +170,13 @@ $sponsor5_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor5
 
     } //getDate
 
-    $(window).on('load', function () {
+    $(window).on('load', function() {
         hidePreLoader();
     });
 
-    $(document).ready(function () {
-        
-        $(window).scroll(function () {
+    $(document).ready(function() {
+
+        $(window).scroll(function() {
 
             if ($(this).scrollTop() > 100) {
 
@@ -181,14 +190,14 @@ $sponsor5_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor5
             }
         });
         // scroll body to 0px on click
-        $('#scrollUp').click(function () {
+        $('#scrollUp').click(function() {
             $('body,html').animate({
                 scrollTop: 0
             }, 300);
             return false;
         });
 
-        $("body").on('click', '#home-tab-tabs-link li', function () {
+        $("body").on('click', '#home-tab-tabs-link li', function() {
             var tab_id = $(this).attr('data-tab');
 
             // console.log(tab_id);
@@ -202,10 +211,10 @@ $sponsor5_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor5
 
 
         /* BEGIN ABOUT */
-        let bgimg = "<?=lang_code() ?>";
+        let bgimg = "<?= lang_code() ?>";
 
 
-        let asset_path = "<?php echo get_stylesheet_directory_uri()?>";
+        let asset_path = "<?php echo get_stylesheet_directory_uri() ?>";
         // console.log(asset_path);
         //  alert("images/About-section_"+bgimg+".jpg");
         $("#modal-about .head_bg").css('background-image', 'url("' + asset_path + '/assets/img/About-section_' + bgimg + '.jpg")');
@@ -214,16 +223,15 @@ $sponsor5_url = filter_text_wpglobus(get_theme_mod('municipality_footer_sponsor5
         /* END ABOUT */
 
     });
-
 </script>
 
 <?php
 if (is_front_page()) {
-    ?>
+?>
 
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $(".table-library").DataTable({
                 // "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
             });
@@ -232,10 +240,11 @@ if (is_front_page()) {
     </script>
 
 
-    <?php
+<?php
 }
 ?>
 
 <?php wp_footer(); ?>
 </body>
+
 </html>
